@@ -1,0 +1,12 @@
+@@Fecha: 06/04/2018      Hora: 00:04:10
+
+NOTA DE PEDIDO           NP: 4
+--------------------------
+CANT    DESC     PREC
+--------------------------
+2   GRANIZADO NORMAL  $2000
+
+
+              TOTAL: 2000
+SU PAGO EN EFECTIVO: 5000
+VAp0<x
