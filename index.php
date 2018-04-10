@@ -27,9 +27,6 @@
 	<script src="../js/dependencies/angular-dirPagination.js"></script>
 	<script src="../js/dependencies/angular-materialize.js"></script>
 	<script src="../js/dependencies/angular-locale_es-419.js"></script>
-	<script src="../js/dependencies/FileSaver.js"></script>
-	<script src="../js/dependencies/xlsx.full.min.js"></script>
-	<script src="../js/dependencies/emulatetab.joelpurra.js"></script>
 	<!--ANGULARJS-APP-->
 	<!--ANGULAR MODULES-->
 	<script src="../js/modules/appPuntoDeVenta.js?v=<?php echo $versionControll ?>"></script>
