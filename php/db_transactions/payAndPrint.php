@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Headers HTML para prevenir que el navegador guarde en caché el contenido de la pagina
 Header('Content-type: text/javascript');
 Header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -14,8 +14,7 @@ use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
-//$connector = new WindowsPrintConnector("pos");
-$connector = new FilePrintConnector("payAndPrint.txt");
+$connector = new WindowsPrintConnector("POS");
 $printer   = new Printer($connector);
 
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
@@ -47,6 +46,8 @@ if(!empty($postdata)){
 		$printer -> text("\nCANT    DESC     PREC");
 		$printer -> text("\n--------------------------\n");
 		
+		$printer -> selectPrintMode(Printer::MODE_DOUBLE_HEIGHT);
+		$printer -> selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
 		foreach($request["listaDeProductos"] as $item){
 			switch($item["choosenCantidad"]){
 				case "1": $prec = $item["cant_1"];
@@ -75,11 +76,15 @@ if(!empty($postdata)){
 		}
 		unset($item);
 
+		$printer -> initialize();
+
 		$printer -> text("\n\n");
 		$printer -> text("              TOTAL: ".$request["totalBoleta"]."\n");
 		$printer -> text("SU PAGO EN EFECTIVO: ".$request["pagoEfectivo"]."\n");         
-		$printer -> cut();
-		$printer -> pulse();
+		$printer -> feed();
+		$printer -> feed();
+		$printer -> feed();         
+		$printer -> cut(Printer::CUT_FULL, 1);
 		$printer -> close();
 		echo '{"status":"success"}';
 	}

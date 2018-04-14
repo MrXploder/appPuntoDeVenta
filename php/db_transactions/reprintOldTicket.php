@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Headers HTML para prevenir que el navegador guarde en caché el contenido de la pagina
 Header('Content-type: text/javascript');
 Header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -13,10 +13,9 @@ require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
-$connector = new WindowsPrintConnector("pos");
+$connector = new WindowsPrintConnector("POS");
 $printer   = new Printer($connector);
 
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
@@ -50,7 +49,7 @@ if(!empty($ticketIdToReprint)){
 			$printer -> text($item["cant"]."   ");
 			$printer -> text($item["nom_prod"]." ");
 			$printer -> text("$".$item["prec"]);
-			$printer -> feed(1);
+			$printer -> feed();
 		}
 		$printer -> initialize();
 		unset($item);
@@ -60,6 +59,8 @@ if(!empty($ticketIdToReprint)){
 		$printer -> text("              TOTAL: $".$ticket["total"]);
 		$printer -> feed();
 		$printer -> text("SU PAGO EN EFECTIVO: $".$ticket["cashPay"]);
+		$printer -> feed();
+		$printer -> feed();
 		$printer -> feed();         
 		$printer -> cut(Printer::CUT_FULL, 1);
 		$printer -> close();

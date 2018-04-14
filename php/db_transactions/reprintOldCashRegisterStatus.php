@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Headers HTML para prevenir que el navegador guarde en caché el contenido de la pagina
 Header('Content-type: text/javascript');
 Header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -13,10 +13,9 @@ require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
-$connector = new FilePrintConnector("pos.txt");
+$connector = new WindowsPrintConnector("POS");
 $printer   = new Printer($connector);
 
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
@@ -41,7 +40,7 @@ if(!empty($crIdToReprint)){
 		$summation += $crData["end_cash_10"]  * 10;
 		$profits = $summation - $crData["start_cash"];
 		foreach ($ticketData as $data){
-			echo $calculatedEarns += $data["total"];
+			$calculatedEarns += $data["total"];
 		}
 		if(($calculatedEarns - ($summation - $crData["start_cash"])) < 0){
 			$crCheck = "LA CAJA NO CUADRA\nSEGUN MIS CALCULOS EL EFECTIVO INGRESADO\nAL CIERRE DE CAJA ES MENOR O MAYOR QUE\nEL CALCULADO POR LAS VENTAS";
@@ -96,6 +95,10 @@ if(!empty($crIdToReprint)){
 		$printer -> text("GANANCIA DEL TURNO (RECOMPROBADA): $".$calculatedEarns);
 		$printer -> feed();
 		$printer -> text("NOTA: ".$crCheck);
+		$printer -> feed();
+		$printer -> cut(Printer::CUT_FULL, 1);
+		$printer -> close();
+		echo json_encode(array("status" => "success"));
 	}
 	catch(MeekroDBException $e){
 		echo '{"status":"mysqlError", "code":"'.$e->getMessage().'"}';

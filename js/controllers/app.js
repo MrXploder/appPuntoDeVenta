@@ -8,6 +8,14 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		$("#detalleTicketModal").modal({dismissible:true,opacity:.5,inDuration:300,outDuration:200,startingTop:"4%",endingTop:"10%",ready:function(o,i){},complete:function(){}});
 		$("#detalleProductModal").modal({dismissible:true,opacity:.5,inDuration:300,outDuration:200,startingTop:"4%",endingTop:"10%",ready:function(o,i){},complete:function(){}});
 		$("#newProductModal").modal({dismissible:true,opacity:.5,inDuration:300,outDuration:200,startingTop:"4%",endingTop:"10%",ready:function(o,i){},complete:function(){}});
+		$('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15, // Creates a dropdown of 15 years to control year,
+    today: 'HOY',
+    clear: 'BORRAR',
+    close: 'OK',
+    closeOnSelect: true // Close upon selecting a date,
+  });
 	});
 	///////////////////////////////////////////////
 
@@ -30,6 +38,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	//catch all keyup events
 	$document.bind('keyup', function(e){
+		console.log($scope.filteredListaDeProductos[0]);
 		/* UP = 38; DOWN = 40; LEFT = 37; RIGHT = 39; SUPR = 46 */
 		if($scope.tableToDisplay === "crearBoleta"){
 			$scope.updateArrayLength();
@@ -99,6 +108,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	$scope.insertNewProductOnProductsList = function(object){
 		if($scope.filteredListaDeProductos[0].choosenCantidad != null){
+			console.log(object);
 			$scope.nuevaBoleta.unshift(object);
 			$scope.codeSelector = null;
 			$scope.listaDeProductos = angular.copy(backupListaDeProductos);
@@ -108,6 +118,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	$scope.whenEnterKeyPressOnCodeSelectorDoSomething = function(e){
 		e.stopImmediatePropagation();
+		e.preventDefault();
 		if($scope.codeSelector != null && $scope.codeSelector > 0){
 			if($scope.filteredListaDeProductos.length > 0){
 				$scope.focusXY(1,1);
@@ -175,7 +186,15 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 			}
 		});
 
+		if($scope.cashPayment == 0){
+			$scope.cashPayment = summation;
+		}
+
 		return summation;
+	};
+
+	$scope.selectAllTextOnFocus = function(){
+		angular.element(document.activeElement).select();
 	};
 
 	$scope.getChange = function(){
@@ -314,7 +333,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		});
 	};
 
-		$scope.reprintOldCashRegisterStatus = function(item){
+	$scope.reprintOldCashRegisterStatus = function(item){
 		$http.get('../php/db_transactions/reprintOldCashRegisterStatus.php', {params:{id: item.sess_id}}).then(function successCallback(response){
 			if(response.data.status === "success"){
 				Materialize.toast("Caja Reimpresa con exito", 5000, "green");
@@ -383,8 +402,17 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	var getCashRegisterListFromServer = function(){
 		$http.get('../php/db_transactions/getCashRegisterList.php').then(function successCallback(response){
 			if(response.data.status === "success"){
-				$scope.cashRegisterList = response.data.cashRegisterList;+
+				$scope.cashRegisterList = response.data.cashRegisterList;
 				console.log($scope.cashRegisterList);
+			}
+		}, function errorCallback(response){
+
+		});
+	};
+
+	$scope.printSalesSummary = function(item){
+		$http.get('../php/db_transactions/printSalesSummary.php', {params:{since: item.since, till: item.till}}).then(function successCallback(response){
+			if(response.data.status === "success"){
 			}
 		}, function errorCallback(response){
 

@@ -27,6 +27,9 @@
 	<script src="../js/dependencies/angular-dirPagination.js"></script>
 	<script src="../js/dependencies/angular-materialize.js"></script>
 	<script src="../js/dependencies/angular-locale_es-419.js"></script>
+	<script src="../js/dependencies/FileSaver.js"></script>
+	<script src="../js/dependencies/xlsx.full.min.js"></script>
+	<script src="../js/dependencies/emulatetab.joelpurra.js"></script>
 	<!--ANGULARJS-APP-->
 	<!--ANGULAR MODULES-->
 	<script src="../js/modules/appPuntoDeVenta.js?v=<?php echo $versionControll ?>"></script>
@@ -52,6 +55,7 @@
 						<li ng-class="tableToDisplay == 'administrarBoletas' ? 'active':''" ><a ng-click="setTableToDisplay('administrarBoletas')">BOLETAS</a></li>
 						<li ng-class="tableToDisplay == 'administrarProductos' ? 'active':''"><a ng-click="setTableToDisplay('administrarProductos')">PRODUCTOS</a></li>
 						<li ng-class="tableToDisplay == 'administrarCaja' ? 'active':''"><a ng-click="setTableToDisplay('administrarCaja')">CAJA</a></li>
+						<li ng-class="tableToDisplay == 'administrarVentas' ? 'active':''"><a ng-click="setTableToDisplay('administrarVentas')">VENTAS</a></li>
 						<li ng-class="tableToDisplay == 'abrirCerrarCaja' ? 'active':''"><a ng-click="setTableToDisplay('abrirCerrarCaja')">ABRIR/CERRAR</a></li>
 					</ul>
 				</div>
@@ -260,24 +264,24 @@
 							<tr ng-repeat="scapegoat in filteredListaDeProductos = (listaDeProductos | filter: {id: codeSelector} | limitTo: 1)" ng-if="codeSelector != null && codeSelector != undefined && codeSelector != ''">
 								<td><input type="text" name="scapegoatNomProducto" id="scapegoatNomProducto" ng-value="scapegoat.nom_prod"/></td>
 								<td style="width: 10%">
-									<input type="text" name="scapegoatCantidadProducto" id="scapegoatCantidadProducto" list="scapegoatCantidadProductoList" ng-model="scapegoat.choosenCantidad" ng-keypress="$event.keyCode === 13 && insertNewProductOnProductsList(scapegoat)"/>
+									<input type="text" name="scapegoatCantidadProducto" id="scapegoatCantidadProducto" list="scapegoatCantidadProductoList" ng-model="scapegoat.choosenCantidad" ng-init="scapegoat.choosenCantidad = '1'" ng-keypress="$event.keyCode === 13 && insertNewProductOnProductsList(scapegoat)"/>
 									<datalist id="scapegoatCantidadProductoList">
-										<option value="1">1 x {{scapegoat.cant_1}}</option>
-										<option value="2">2 x {{scapegoat.cant_2}}</option>
-										<option value="3">3 x {{scapegoat.cant_3}}</option>
-										<option value="4">4 x {{scapegoat.cant_4}}</option>
-										<option value="5">5 x {{scapegoat.cant_5}}</option>										
+										<option value="1">1 x {{scapegoat.cant_1 | currency: '$':0}}</option>
+										<option value="2">2 x {{scapegoat.cant_2 | currency: '$':0}}</option>
+										<option value="3">3 x {{scapegoat.cant_3 | currency: '$':0}}</option>
+										<option value="4">4 x {{scapegoat.cant_4 | currency: '$':0}}</option>
+										<option value="5">5 x {{scapegoat.cant_5 | currency: '$':0}}</option>										
 									</datalist>
 								</td>
 								<td>
-									<input type="text" name="scapegoatPrecioProducto" id="scapegoatPrecioProducto" ng-value="getValueFromScapegoatAndChoosenCant(scapegoat)">
+									<input type="text" name="scapegoatPrecioProducto" id="scapegoatPrecioProducto" ng-value="getValueFromScapegoatAndChoosenCant(scapegoat) | currency: '$':0">
 								</td>
 							</tr>
 							<!--ACTUALLY THE REAL BILL-->
 							<tr ng-repeat="item in nuevaBoleta track by $index" class="grey lighten-4">
 								<td><input type="text" name="nomProductNo{{$index+1}}" id="nomProductNo{{$index+1}}" ng-model="item.nom_prod" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
 								<td style="width: 10%"><input type="text" name="cantProductNo{{$index+1}}" id="cantProductNo{{$index+1}}" ng-model="item.choosenCantidad" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
-								<td style="width: 10%"><input type="text" name="precProductNo{{$index+1}}" id="precProductNo{{$index+1}}" ng-value="getValueFromScapegoatAndChoosenCant(item)" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
+								<td style="width: 10%"><input type="text" name="precProductNo{{$index+1}}" id="precProductNo{{$index+1}}" ng-value="getValueFromScapegoatAndChoosenCant(item) | currency: '$':0" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
 							</tr>
 						</tbody>
 					</table>
@@ -288,16 +292,16 @@
 							</tr>
 							<tr>
 								<th class="red">TOTAL: </th>
-								<td><input type="text" ng-value="getTotal() | currency: '$':0" readonly></td>
+								<td><input type="text" ng-model="getTotal() | currency: '$':0" readonly></td>
 							</tr>
 							<tr>
 								<th class="red">PAGO EFECTIVO: </th>
-								<td><input type="text" id="cashPaymentInputElement" name="cashPaymentInputElement" ng-model="cashPayment" ng-keydown="$event.keyCode === 13 && commitPayment($event)" currency-input=""></td>
+								<td><input type="text" id="cashPaymentInputElement" name="cashPaymentInputElement" ng-model="cashPayment" ng-init="cashPayment = 0" ng-keydown="$event.keyCode === 13 && commitPayment($event)" currency-input="" ng-focus="selectAllTextOnFocus()"></td>
 							</tr>
 							<tr>
 								<th class="red">SU CAMBIO: </th>
 								<td>
-									<input type="text" ng-value="getChange()" ng-model="cashChange" readonly>
+									<input type="text" ng-model="getChange()" ng-model="cashChange" readonly>
 								</td>
 							</tr>
 						</thead>
@@ -442,6 +446,25 @@
 								<td ng-bind="item.since" class="vMiddle hCenter"></td>
 								<td ng-bind="item.till" class="vMiddle hCenter"></td>
 								<td><a class="btn waves-effect waves-light grey" ng-click="reprintOldCashRegisterStatus(item)"><i class="fas fa-print"></i></a></td>
+							</tr>
+						</tbody>
+					</table>
+					<table id="tablaAdministrarVentas" name="tablaAdministrarVentas" class="cbordered" style="table-layout: inherit; width: 100%" ng-show="tableToDisplay == 'administrarVentas'">
+						<thead class="amber">
+							<tr>
+								<th colspan="3">RESUMEN DE VENTAS</th>
+							</tr>
+							<tr>
+								<th>DESDE</th>
+								<th>HASTA</th>
+								<th>IMPRIMIR</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><input type="text" class="datepicker" ng-model="salesSummary.since"></td>
+								<td><input type="text" class="datepicker" ng-model="salesSummary.till"></td>
+								<td><a class="btn waves-effect waves-light grey" ng-class="(salesSummary.since != null && salesSummary.till != null && salesSummary.since != '' && salesSummary.till != '') ? '':'disabled'" ng-click="printSalesSummary(salesSummary)"><i class="fas fa-print"></i></a></td>
 							</tr>
 						</tbody>
 					</table>

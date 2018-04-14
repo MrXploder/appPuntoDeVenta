@@ -1,6 +1,6 @@
-@@Fecha: 06/04/2018      Hora: 00:04:10
+@@Fecha: 10/04/2018      Hora: 17:04:09
 
-NOTA DE PEDIDO           NP: 4
+NOTA DE PEDIDO           NP: 5
 --------------------------
 CANT    DESC     PREC
 --------------------------
@@ -8,5 +8,5 @@ CANT    DESC     PREC
 
 
               TOTAL: 2000
-SU PAGO EN EFECTIVO: 5000
+SU PAGO EN EFECTIVO: 2000
 VAp0<x
