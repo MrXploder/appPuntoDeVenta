@@ -32,7 +32,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	//catch all keyup events
 	$document.bind('keyup', function(e){
-		console.log($scope.filteredListaDeProductos[0]);
+		//console.log($scope.filteredListaDeProductos[0]);
 		/* UP = 38; DOWN = 40; LEFT = 37; RIGHT = 39; SUPR = 46 */
 		if($scope.tableToDisplay === "crearBoleta"){
 			$scope.updateArrayLength();
@@ -102,7 +102,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	$scope.insertNewProductOnProductsList = function(object){
 		if($scope.filteredListaDeProductos[0].choosenCantidad != null){
-			console.log(object);
+			//console.log(object);
 			$scope.nuevaBoleta.unshift(object);
 			$scope.codeSelector = null;
 			$scope.listaDeProductos = angular.copy(backupListaDeProductos);
@@ -144,8 +144,8 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		var dirY = parseInt(coorY);
 
 		$scope.updateArrayLength();
-		console.log("coors", $scope.temparray[0][0]);
-		console.log("temparray", $scope.temparray);
+		//console.log("coors", $scope.temparray[0][0]);
+		//console.log("temparray", $scope.temparray);
 		document.getElementById($scope.temparray[dirY][dirX].id).focus();
 		$scope.currentX = dirX;
 		$scope.currentY = dirY;
@@ -153,7 +153,6 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	$scope.updateArrayLength = function(){
 		var myInputFields = $("#tablaNuevaBoleta tbody tr input[type='text'], #tablaNuevaBoleta tbody tr input[type='number']");
-		console.log("myinputfields", myInputFields);
 		var x,i,j,chunk = 3;
 		$scope.temparray = new Array;
 		$scope.temparray[0] = new Array; 
@@ -233,18 +232,17 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	};
 
 	$scope.setTableToDisplay = function(tableName){
-		if($scope.cashRegister.open === true){
+		if($scope.cashRegister.open === false && tableName === "crearBoleta"){
+			$scope.tableToDisplay = "abrirCerrarCaja";
+		}
+		else{
+			if($scope.tableToDisplay === 'pagarBoleta'){
+				$scope.cashPayment = $scope.getTotal();
+			}
 			$scope.tableToDisplay = tableName;
 			getTicketsListFromServer();
 			getProductListFromServer();
 			getCashRegisterListFromServer();
-
-		}
-		else{
-			$scope.tableToDisplay = "abrirCerrarCaja";
-		}
-		if($scope.tableToDisplay === 'pagarBoleta'){
-			$scope.cashPayment = $scope.getTotal();
 		}
 	};
 
@@ -337,7 +335,8 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	$scope.showProductDetail = function(item){
 		$scope.selectedProduct = angular.copy(item);
-		console.log($scope.selectedProduct);
+		$scope.selectedProduct.old_id = angular.copy(item.id);
+		//console.log($scope.selectedProduct);
 		angular.element(document.getElementById("detalleProductModal")).modal('open');
 	};
 
@@ -395,7 +394,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		$http.get('../php/db_transactions/getCashRegisterList.php').then(function successCallback(response){
 			if(response.data.status === "success"){
 				$scope.cashRegisterList = response.data.cashRegisterList;
-				console.log($scope.cashRegisterList);
+				//console.log($scope.cashRegisterList);
 			}
 		}, function errorCallback(response){
 

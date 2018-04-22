@@ -6,13 +6,14 @@ Header("Cache-Control: post-check=0, pre-check=0", false);
 Header("Pragma: no-cache");
 // Notificar solamente errores de ejecución
 error_reporting(E_ERROR);
-
+require $_SERVER['DOCUMENT_ROOT'].'/php/functions/versionControll.php';
 require $_SERVER['DOCUMENT_ROOT'].'php/functions/sanitizeInput.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\CapabilityProfile;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
 if($modeControll === 'dev'){

@@ -16,7 +16,8 @@ $postData = file_get_contents("php://input");
 if(!empty($postData)){
 	$request = json_decode($postData, true);
 	try{
-		DB::insert('products', array(
+		DB::replace('products', array(
+			"id"       => $request["id"],
 			"nom_prod" => $request["nom_prod"],
 			"cant_1"   => $request["cant_1"],
 			"cant_2"   => $request["cant_2"],

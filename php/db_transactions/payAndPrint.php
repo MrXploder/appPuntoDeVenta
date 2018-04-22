@@ -7,6 +7,7 @@ Header("Pragma: no-cache");
 // Notificar solamente errores de ejecución
 error_reporting(E_ERROR);
 
+require $_SERVER['DOCUMENT_ROOT'].'/php/functions/versionControll.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
 
@@ -77,16 +78,20 @@ if(!empty($postdata)){
 				"cant"				  => $item["choosenCantidad"],
 				"prec"				  => $prec
 			));
-			$printer -> text($item["choosenCantidad"]."   ".$item["nom_prod"]."  $".$prec);
+			$printer -> text("${item['choosenCantidad']}           ${item['nom_prod']}       $${prec}");
 			$printer -> feed();
 		}
 		unset($item);
 
 		$printer -> initialize();
 
-		$printer -> text("\n\n");
-		$printer -> text("              TOTAL: ".$request["totalBoleta"]."\n");
-		$printer -> text("SU PAGO EN EFECTIVO: ".$request["pagoEfectivo"]."\n");         
+		$printer -> feed();
+		$printer -> feed();
+		$printer -> text("              TOTAL: $".$request["totalBoleta"]);
+		$printer -> feed();
+		$printer -> text("SU PAGO EN EFECTIVO: $".$request["pagoEfectivo"]);
+		$printer -> feed();
+		$printer -> text("SU VUELTO:           $".($request["pagoEfectivo"] - $request["totalBoleta"]));         
 		$printer -> feed();
 		$printer -> feed();
 		$printer -> feed();         

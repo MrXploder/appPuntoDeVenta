@@ -10,6 +10,7 @@ error_reporting(E_ERROR);
 require $_SERVER['DOCUMENT_ROOT'].'php/functions/sanitizeInput.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 
+//DB::debugMode();
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
 $putData = file_get_contents("php://input");
 //Si hay algo, seguimos.
@@ -17,14 +18,18 @@ if(!empty($putData)){
 	$request = json_decode($putData, true);
 
 	try{
-		DB::update('products', array(
+		DB::delete('products', "id = %d", $request["old_id"]);
+
+		DB::replace('products', array(
+			"id"			 => $request["id"],
 			"nom_prod" => $request["nom_prod"],
 			"cant_1"   => $request["cant_1"],
 			"cant_2"   => $request["cant_2"],
 			"cant_3"   => $request["cant_3"],
 			"cant_4"   => $request["cant_4"],
 			"cant_5"   => $request["cant_5"]
-		), "id = %d", $request["id"]);
+		));
+
 		$payLoad["status"] = "success";
 	}
 	catch(MeekroDBException $e){

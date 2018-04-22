@@ -1,0 +1,14 @@
+@@Fecha: 21/04/2018      Hora: 23:04:50
+
+!!          NP: 17@
+--------------------------------------------
+CANTIDAD         DESCRIPCION          PRECIO
+--------------------------------------------
+!! 5      CONO FELIPE     $5
+@
+
+              TOTAL: $5
+SU PAGO EN EFECTIVO: $10000
+SU VUELTO:           $9995
+
+VA

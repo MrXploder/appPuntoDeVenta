@@ -158,11 +158,11 @@
 				<ng-form name="dp_form">
 					<table class="cbordered" style="table-layout: inherit; width: 100%">
 						<tr class="grey">
-							<th>ID</th>
+							<th>#</th>
 							<th>NOMBRE</th>
 						</tr>
 						<tr>
-							<td ng-bind="selectedProduct.id"></td>
+							<td><input type="text" ng-model="selectedProduct.id"></td>
 							<td><input type="text" ng-model="selectedProduct.nom_prod"></td>
 						</tr>
 					</table>
@@ -202,8 +202,14 @@
 			<div class="modal-content modal-topbordered purple-topbordered">
 				<ng-form name="np_form">
 					<table class="cbordered" style="table-layout: inherit; width: 100%">
-						<tr class="grey"><th>NOMBRE</th></tr>
-						<tr><td><input type="text" ng-model="newProduct.nom_prod"></td></tr>
+						<tr class="grey">
+							<th>#</th>
+							<th>NOMBRE</th>
+						</tr>
+						<tr>
+							<td><input type="text" ng-model="newProduct.id"></td>
+							<td><input type="text" ng-model="newProduct.nom_prod"></td>
+						</tr>
 					</table>
 					<table class="cbordered" style="table-layout: inherit; width: 100%">
 						<thead class="grey">
@@ -371,7 +377,7 @@
 						</table>
 						<table class="cbordered" style="table-layout: inherit; width: 100%" ng-show="!cashRegister.open">
 							<thead>
-								<tr><th>EFECTIVO INICIAL (CON CUANTO DINERO EMPEZARÁS A TRABAJAR)</th></tr>
+								<tr><th class="green white-text">EFECTIVO INICIAL (CON CUANTO DINERO EMPEZARÁS A TRABAJAR)</th></tr>
 							</thead>
 							<tfoot>
 								<tr><td><a class="btn waves-effect waves-light green" ng-click="startCashRegister()">ENVIAR</a></td></tr>
@@ -441,7 +447,7 @@
 						</tfoot>
 						<tbody>
 							<tr dir-paginate="item in cashRegisterList | itemsPerPage: 5" pagination-id="cashRegisterListPaginationId">
-								<td><a class="btn waves-effect waves-light blue" ng-bind="item.sess_id"></a></td>
+								<td ng-bind="item.sess_id" class="vMiddle hCenter"></td>
 								<td ng-bind="item.since" class="vMiddle hCenter"></td>
 								<td ng-bind="item.till" class="vMiddle hCenter"></td>
 								<td><a class="btn waves-effect waves-light grey" ng-click="reprintOldCashRegisterStatus(item)"><i class="fas fa-print"></i></a></td>

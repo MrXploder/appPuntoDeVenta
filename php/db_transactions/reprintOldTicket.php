@@ -6,13 +6,14 @@ Header("Cache-Control: post-check=0, pre-check=0", false);
 Header("Pragma: no-cache");
 // Notificar solamente errores de ejecución
 error_reporting(E_ERROR);
-
+require $_SERVER['DOCUMENT_ROOT'].'/php/functions/versionControll.php';
 require $_SERVER['DOCUMENT_ROOT'].'php/functions/sanitizeInput.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\CapabilityProfile;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
 if($modeControll === 'dev'){
@@ -51,9 +52,7 @@ if(!empty($ticketIdToReprint)){
 		$printer -> selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
 		foreach($ticket["listaDeProductos"] as $item){
 
-			$printer -> text($item["cant"]."   ");
-			$printer -> text($item["nom_prod"]." ");
-			$printer -> text("$".$item["prec"]);
+			$printer -> text("${item['cant']}      ${item['nom_prod']}     $${item['prec']}");
 			$printer -> feed();
 		}
 		$printer -> initialize();
@@ -65,6 +64,7 @@ if(!empty($ticketIdToReprint)){
 		$printer -> feed();
 		$printer -> text("SU PAGO EN EFECTIVO: $".$ticket["cashPay"]);
 		$printer -> feed();
+		$printer -> text("SU VUELTO:           $".($ticket["cashPay"] - $ticket["total"]));
 		$printer -> feed();
 		$printer -> feed();         
 		$printer -> cut(Printer::CUT_FULL, 1);
