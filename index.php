@@ -1,4 +1,5 @@
-<?php require $_SERVER['DOCUMENT_ROOT'].'/php/functions/versionControll.php'; ?>
+<?php require $_SERVER['DOCUMENT_ROOT'].'php/dependencies/databaseCheckIntegrity.php'; ?>
+<?php require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php'; ?>
 <!DOCTYPE html>
 <html ng-app="appPuntoDeVenta" ng-controller="appController">
 <head>
