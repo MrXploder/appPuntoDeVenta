@@ -34,7 +34,7 @@ if(!empty($postdata)){
 	//Primero debemos obtener el ID del status de la caja actual.
 	try{
 		$printer -> initialize();
-		$printer -> text("Fecha: ".date("d/m/Y")."      Hora: ".date("H:m:s"));
+		$printer -> text("Fecha: ".date("d/m/Y")."      Hora: ".date("H:i:s"));
 		
 		$cashRegisterSessId = DB::queryFirstField("SELECT `sess_id` FROM `cr_status` WHERE `open` = 1");
 		

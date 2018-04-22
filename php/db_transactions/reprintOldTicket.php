@@ -33,7 +33,7 @@ if(!empty($ticketIdToReprint)){
 		$ticket["listaDeProductos"] = DB::query("SELECT * FROM `ticket_detail_log` WHERE `id_ticketdata` = %d", $ticketIdToReprint);
 
 		$printer -> initialize();
-		$printer -> text("Fecha: ".date("d/m/Y", strtotime($ticket["date"]))."      Hora: ".date("H:m:s", strtotime($ticket["date"])));
+		$printer -> text("Fecha: ".date("d/m/Y", strtotime($ticket["date"]))."      Hora: ".date("H:i:s", strtotime($ticket["date"])));
 		$printer -> feed();
 		$printer -> feed();
 		$printer -> selectPrintMode(Printer::MODE_DOUBLE_HEIGHT);

@@ -1,15 +1,16 @@
-@@Fecha: 21/04/2018      Hora: 23:04:50
+@@Fecha: 22/04/2018      Hora: 03:48:51
 
-NOTA DE PEDIDO           NP: 17
+NOTA DE PEDIDO           NP: 2
 --------------------------
 CANT    DESC     PREC
 --------------------------
-!! 5           CONO FELIPE       $5
+!! 1           CONO LUISITO       $100
+1           CONO FELIPE       $1000
 @
 
-              TOTAL: $5
-SU PAGO EN EFECTIVO: $10000
-SU VUELTO:           $9995
+              TOTAL: $1100
+SU PAGO EN EFECTIVO: $2000
+SU VUELTO:           $900
 
 
 VA

@@ -236,13 +236,13 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 			$scope.tableToDisplay = "abrirCerrarCaja";
 		}
 		else{
-			if($scope.tableToDisplay === 'pagarBoleta'){
-				$scope.cashPayment = $scope.getTotal();
-			}
 			$scope.tableToDisplay = tableName;
 			getTicketsListFromServer();
 			getProductListFromServer();
 			getCashRegisterListFromServer();
+		}
+		if($scope.tableToDisplay === 'pagarBoleta'){
+			$scope.cashPayment = $scope.getTotal();
 		}
 	};
 

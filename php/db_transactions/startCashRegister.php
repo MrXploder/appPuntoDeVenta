@@ -7,6 +7,7 @@ Header("Pragma: no-cache");
 // Notificar solamente errores de ejecución
 error_reporting(E_ERROR);
 
+require $_SERVER['DOCUMENT_ROOT'].'/php/functions/versionControll.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
@@ -17,7 +18,7 @@ if(!empty($postdata)){
 	$request = json_decode($postdata, true);
 	try{
 		DB::insert('cr_status', array(
-			"since"	 		 => date("d/m/Y H:m:s"),
+			"since"	 		 => date("d/m/Y H:i:s"),
 			"open"			 => 1,
 			"start_cash" => $request["start_cash"]
 		));

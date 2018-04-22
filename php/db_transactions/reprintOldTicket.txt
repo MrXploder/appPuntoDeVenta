@@ -1,14 +1,15 @@
-@@Fecha: 21/04/2018      Hora: 23:04:50
+@@Fecha: 22/04/2018      Hora: 02:04:37
 
-!!          NP: 17@
+!!          NP: 1@
 --------------------------------------------
 CANTIDAD         DESCRIPCION          PRECIO
 --------------------------------------------
-!! 5      CONO FELIPE     $5
+!! 1      ARTESANAL CHICO     $900
+1      CONO FELIPE     $1000
 @
 
-              TOTAL: $5
-SU PAGO EN EFECTIVO: $10000
-SU VUELTO:           $9995
+              TOTAL: $1900
+SU PAGO EN EFECTIVO: $2000
+SU VUELTO:           $100
 
 VA

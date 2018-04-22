@@ -12,6 +12,8 @@ require $_SERVER['DOCUMENT_ROOT'].'php/functions/sanitizeInput.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
 
+//DB::debugMode();
+
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
@@ -27,21 +29,31 @@ $printer   = new Printer($connector);
 $sinceAngularDate = sanitizeInput($_GET["since"]);
 $tillAngularDate  = sanitizeInput($_GET["till"]);
 
-$sinceMysqlFormat = str_replace("-", "/", $sinceAngularDate);
-$tillMysqlFormat  = str_replace("-", "/", $tillAngularDate);
+$sinceMysqlFormat = $sinceAngularDate; 
+$tillMysqlFormat  = $tillAngularDate;
 
 $startId = 0;
 $endId = 0;
 
 $data = DB::query("SELECT `sess_id`, `since` FROM `cr_status` WHERE `open` = 0 ORDER BY `sess_id` DESC");
 foreach ($data as $item){
-	if($sinceMysqlFormat == substr($item["since"], 0, 10)){
+	echo "originaldate", $item["since"];
+	echo "converteddate", ;
+	
+	$loopSince = date("d/m/Y", strtotime(str_replace("/", "-", $item["since"])));
+	$loopTill  = date("d/m/Y", strtotime(str_replace("/", "-", $item["till"])))
+
+	if($sinceMysqlFormat == date("d/m/Y", strtotime($item["since"]))){
 		$startId = $item["sess_id"];
+		echo "startId", $startId;
 	}
-	if($tillMysqlFormat >= substr($item["since"], 0, 10)){
-		$endId = $item["sess_id"];
+	if($tillMysqlFormat >= date("d/m/Y", $item["till"])){
+		 $endId = $item["sess_id"];
+		 echo "endId", $endId;
 	}
+
 }
+
 $listadoDeProductos = DB::query("SELECT `id`, `nom_prod` FROM `products`");
 
 for($x = $startId; $x <= $endId; $x++){
@@ -62,7 +74,7 @@ for($x = $startId; $x <= $endId; $x++){
 }
 
 $printer -> initialize();
-$printer -> text("FECHA: ".date("d-m-Y")."     HORA: ".date("H:m:s"));
+$printer -> text("FECHA: ".date("d-m-Y")."     HORA: ".date("H:i:s"));
 $printer -> feed();
 $printer -> text("-------------------------------------");
 $printer -> feed();
@@ -81,7 +93,7 @@ $printer -> feed();
 $printer -> text("-------------------------------------");
 $printer -> feed();
 foreach ($toPrintList as $selection){
-$mainTotal += $selection["prec"];
+	$mainTotal += $selection["prec"];
 	$printer -> text($selection["key"]."       ".$selection["cant"]."         ".$selection["prec"]);
 	$printer -> feed();
 }
