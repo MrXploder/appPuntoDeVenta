@@ -78,7 +78,7 @@ if(!empty($postdata)){
 				"cant"				  => $item["choosenCantidad"],
 				"prec"				  => $prec
 			));
-			$printer -> text("${item['choosenCantidad']}     ${item['nom_prod']}       $${prec}");
+			$printer -> text("${item['choosenCantidad']}  ${item['nom_prod']}  $${prec}");
 			$printer -> feed();
 		}
 		unset($item);

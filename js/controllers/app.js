@@ -17,6 +17,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	$scope.nuevaBoleta = [];
 	$scope.currentX = 0;
 	$scope.currentY = 0;
+	$scope.paying = false;
 	var backupListaDeProductos = [];
 
 	$scope.newProduct = {
@@ -33,7 +34,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	//catch all keyup events
 	$document.bind('keyup', function(e){
 		console.log(e.which);
-		//console.log($scope.filteredListaDeProductos[0]);
+		//console.log($scope.filtefredListaDeProductos[0]);
 		/* UP = 38; DOWN = 40; LEFT = 37; RIGHT = 39; SUPR = 46; A = 65*/
 		if($scope.tableToDisplay === "crearBoleta"){
 			$scope.updateArrayLength();
@@ -213,7 +214,8 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	$scope.commitPayment = function(e){
 		e.stopImmediatePropagation();
-		if(e.keyCode === 13 && $scope.cashPayment >= $scope.getTotal()){
+		if(e.keyCode === 13 && $scope.cashPayment >= $scope.getTotal() && $scope.paying === false){
+			$scope.paying = true;
 			commitPaymentOnServer($scope.getTotal(), $scope.cashPayment, $scope.cashChange, $scope.nuevaBoleta);
 		}
 		else if(e.keyCode === 13 && $scope.cashPayment < $scope.getTotal()){
@@ -232,12 +234,12 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 				$scope.codeSelector = null;
 				$scope.nuevaBoleta = new Array;
 				$scope.listaDeProductos = angular.copy(backupListaDeProductos);
-				$scope.focusXY(0,0);
-
+				$timeout(function(){document.getElementById("codeSelectorInputElement").focus();},100);
 			}
 			else{
 				Materialize.toast("Error interno al generar boleta", 5000, "red");
 			}
+			$scope.paying = false;
 		}, function errorCallback(response){
 			Materialize.toast("Error interno al generar boleta", 5000, "red");
 		});
