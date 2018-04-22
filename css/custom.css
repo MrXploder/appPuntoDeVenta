@@ -161,3 +161,7 @@ th{
 	text-align: center;
 	padding: 10px;
 }
+
+input[type=text], input[type=number]{
+	height: 1rem !important;
+}

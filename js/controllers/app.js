@@ -32,8 +32,9 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	//catch all keyup events
 	$document.bind('keyup', function(e){
+		console.log(e.which);
 		//console.log($scope.filteredListaDeProductos[0]);
-		/* UP = 38; DOWN = 40; LEFT = 37; RIGHT = 39; SUPR = 46 */
+		/* UP = 38; DOWN = 40; LEFT = 37; RIGHT = 39; SUPR = 46; A = 65*/
 		if($scope.tableToDisplay === "crearBoleta"){
 			$scope.updateArrayLength();
 			if(e.which === 40){
@@ -59,6 +60,16 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 				if($scope.currentX < 2){
 					$scope.currentX++;
 					$scope.focusXY($scope.currentX, $scope.currentY);
+				}
+			}
+			else if(e.which === 65){
+				if(confirm("¿Esta seguro de eliminar todos los productos de la nueva boleta?")){
+					$scope.setTableToDisplay("crearBoleta");
+					$scope.cashPayment = null;
+					$scope.codeSelector = null;
+					$scope.nuevaBoleta = new Array;
+					$scope.listaDeProductos = angular.copy(backupListaDeProductos);
+					$scope.focusXY(0,0);
 				}
 			}
 		}
@@ -97,6 +108,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	$scope.deleteElement = function(element){
 		var found = $scope.nuevaBoleta.indexOf(element);
 		$scope.nuevaBoleta.splice(found, 1);
+		$scope.codeSelector = null;
 		$scope.focusXY(0,0);
 	}
 

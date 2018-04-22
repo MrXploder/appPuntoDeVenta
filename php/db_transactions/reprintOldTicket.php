@@ -52,7 +52,7 @@ if(!empty($ticketIdToReprint)){
 		$printer -> selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
 		foreach($ticket["listaDeProductos"] as $item){
 
-			$printer -> text("${item['cant']}      ${item['nom_prod']}     $${item['prec']}");
+			$printer -> text("${item['cant']}     ${item['nom_prod']}     $${item['prec']}");
 			$printer -> feed();
 		}
 		$printer -> initialize();

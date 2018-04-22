@@ -263,7 +263,7 @@
 							<tr class="black white-text">
 								<td colspan="5">
 									<label for="codeSelectorInputElement" class="active">Codigo de Producto</label>
-									<input type="number" ng-model="codeSelector" name="codeSelectorInputElement" id="codeSelectorInputElement" ng-keydown="$event.keyCode === 13 && whenEnterKeyPressOnCodeSelectorDoSomething($event)" autofocus>
+									<input type="number" ng-model="codeSelector" name="codeSelectorInputElement" id="codeSelectorInputElement" ng-keydown="$event.keyCode === 13 && whenEnterKeyPressOnCodeSelectorDoSomething($event)" autofocus ng-focus="codeSelector = null">
 								</td>
 							</tr>
 							<!--ACTUALLY THE REAL BILL-->
@@ -288,6 +288,10 @@
 								<td>
 									<input type="text" name="scapegoatPrecioProducto" id="scapegoatPrecioProducto" ng-value="getValueFromScapegoatAndChoosenCant(scapegoat) | currency: '$':0">
 								</td>
+							</tr>
+							<!--THE SUBTOTAL-->
+							<tr class="red white-text">
+								<td colspan="5">Total: {{getTotal() | currency: '$':0}}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -482,21 +486,20 @@
 </main>
 
 <footer class="page-footer footer grey darken-3">
-	<div class="container">
-		<div class="footer-copyright grey darken-3">
-			<div class="container">
-				<div class="row">
-					<h6>SUPRIMIR = Estando sobre un producto puedes eliminarlo.</h6>
-					<h6>B        = Cuando estes pagando, aprieta B para volver</h6>
-					<h6>ENTER    = Cuando estes en el selector de Codigo y no haya nada escrito, aprieta Enter para ir a pagar</h6>
-					<h6>L        = Presiona L en cualquier momento para ver el listado de productos</h6>
-					<h6>ESC      = Presiona Esc cuando estes viendo el listado de productos para salir.</h6>
-				</div>
-				<div class="row">
-					<a href="mailto: l.arancibiaf@gmail.com">© MrXploder AngularJS Dev</a>
-					<a class="grey-text text-lighten-4 right" href="#!">Compilación: #<?php echo $versionControll ?></a>
-				</div>
-			</div>
+	<div class="footer-copyright grey darken-3">
+		<div class="row">
+			<p>
+				<strong class="black">SUPRIMIR</strong> = Estando sobre un producto puedes eliminarlo.<br>
+				<strong class="black">A</strong>= Presionalo estando sobre la boleta para anular toda la venta.<br>
+				<strong class="black">B</strong> = Cuando estes pagando, presiona para volver.<br>
+				<strong class="black">ENTER</strong> = Cuando estes en el selector de Codigo y no haya nada escrito, presiona para ir a pagar.<br>
+				<strong class="black">L</strong> = Presionalo en cualquier momento para ver el listado de productos.<br>
+				<strong class="black">ESC</strong> = Presionalo cuando estes viendo el listado de productos para salir.
+			</p>
+		</div>
+		<div class="row">
+			<a href="mailto: l.arancibiaf@gmail.com">© MrXploder AngularJS Dev</a><br>
+			<a class="grey-text text-lighten-4 right" href="#!">Compilación: #<?php echo $versionControll ?></a>
 		</div>
 	</div>
 </footer>
