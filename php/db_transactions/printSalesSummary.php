@@ -12,7 +12,7 @@ require $_SERVER['DOCUMENT_ROOT'].'php/functions/sanitizeInput.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
 
-//DB::debugMode();
+DB::debugMode();
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
@@ -29,29 +29,22 @@ $printer   = new Printer($connector);
 $sinceAngularDate = sanitizeInput($_GET["since"]);
 $tillAngularDate  = sanitizeInput($_GET["till"]);
 
-$sinceMysqlFormat = $sinceAngularDate; 
-$tillMysqlFormat  = $tillAngularDate;
+$sinceMysqlFormat = date($sinceAngularDate); 
+$tillMysqlFormat  = date($tillAngularDate);
 
 $startId = 0;
 $endId = 0;
 
 $data = DB::query("SELECT `sess_id`, `since` FROM `cr_status` WHERE `open` = 0 ORDER BY `sess_id` DESC");
 foreach ($data as $item){
-	echo "originaldate", $item["since"];
-	echo "converteddate", ;
-	
-	$loopSince = date("d/m/Y", strtotime(str_replace("/", "-", $item["since"])));
-	$loopTill  = date("d/m/Y", strtotime(str_replace("/", "-", $item["till"])))
+	$loopDate  = date("d-m-Y", strtotime(str_replace("/", "-", $item["since"])));
 
-	if($sinceMysqlFormat == date("d/m/Y", strtotime($item["since"]))){
+	if($sinceMysqlFormat == $loopDate){
 		$startId = $item["sess_id"];
-		echo "startId", $startId;
 	}
-	if($tillMysqlFormat >= date("d/m/Y", $item["till"])){
-		 $endId = $item["sess_id"];
-		 echo "endId", $endId;
+	if($tillMysqlFormat == $loopDate){
+		$endId = $item["sess_id"];
 	}
-
 }
 
 $listadoDeProductos = DB::query("SELECT `id`, `nom_prod` FROM `products`");
