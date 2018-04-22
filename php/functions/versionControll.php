@@ -1,6 +1,13 @@
 <?php
+$modeControll = "dev";
 $versionControll = rand();
+
 	/*
+	version alert!{
+	 - Ahora se migró todo el proyecto a github por lo que ahi se mantendrá un control de versión
+	 - De igual manera se deberá crear una nueva version para producción al pasar de DEV a PROD para evitar el cacheo de archivos
+	 - Esas versiones deberan ir con la fecha de entrega de PROD al cliente. ejemplo: "version 1.20 { 10-10-2018 }"
+	}
 	version rand(){
 		- is for development to prevent browser cache the files
 	}

@@ -8,14 +8,8 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		$("#detalleTicketModal").modal({dismissible:true,opacity:.5,inDuration:300,outDuration:200,startingTop:"4%",endingTop:"10%",ready:function(o,i){},complete:function(){}});
 		$("#detalleProductModal").modal({dismissible:true,opacity:.5,inDuration:300,outDuration:200,startingTop:"4%",endingTop:"10%",ready:function(o,i){},complete:function(){}});
 		$("#newProductModal").modal({dismissible:true,opacity:.5,inDuration:300,outDuration:200,startingTop:"4%",endingTop:"10%",ready:function(o,i){},complete:function(){}});
-		$('.datepicker').pickadate({
-    selectMonths: true, // Creates a dropdown to control month
-    selectYears: 15, // Creates a dropdown of 15 years to control year,
-    today: 'HOY',
-    clear: 'BORRAR',
-    close: 'OK',
-    closeOnSelect: true // Close upon selecting a date,
-  });
+		$('.datepicker').pickadate({selectMonths: true,selectYears: 15,today: 'HOY',clear: 'BORRAR',close: 'OK',closeOnSelect: true});
+		$scope.updateArrayLength();
 	});
 	///////////////////////////////////////////////
 
@@ -72,7 +66,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		else if($scope.tableToDisplay === "pagarBoleta"){
 			if(e.which === 66){
 				$scope.setTableToDisplay("crearBoleta");
-				$timeout(function(){document.getElementById("codeSelectorInputElement").focus();},1500);
+				$timeout(function(){document.getElementById("codeSelectorInputElement").focus();},100);
 			}
 		}
 	});
@@ -150,13 +144,16 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		var dirY = parseInt(coorY);
 
 		$scope.updateArrayLength();
+		console.log("coors", $scope.temparray[0][0]);
+		console.log("temparray", $scope.temparray);
 		document.getElementById($scope.temparray[dirY][dirX].id).focus();
 		$scope.currentX = dirX;
 		$scope.currentY = dirY;
 	};
 
 	$scope.updateArrayLength = function(){
-		var myInputFields = $("#tablaNuevaBoleta tbody tr input[type='text']");
+		var myInputFields = $("#tablaNuevaBoleta tbody tr input[type='text'], #tablaNuevaBoleta tbody tr input[type='number']");
+		console.log("myinputfields", myInputFields);
 		var x,i,j,chunk = 3;
 		$scope.temparray = new Array;
 		$scope.temparray[0] = new Array; 

@@ -15,7 +15,12 @@ use Mike42\Escpos\Printer;
 use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
-$connector = new WindowsPrintConnector("POS");
+if($modeControll === 'dev'){
+	$connector = new FilePrintConnector("reprintOldCashRegisterStatus.txt");
+}
+else{
+	$connector = new WindowsPrintConnector("POS");
+}
 $printer   = new Printer($connector);
 
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)

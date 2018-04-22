@@ -14,7 +14,13 @@ use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
-$connector = new WindowsPrintConnector("POS");
+if($modeControll === 'dev'){
+	$connector = new FilePrintConnector("payAndPrint.txt");
+}
+else{
+	$connector = new WindowsPrintConnector("POS");
+}
+
 $printer   = new Printer($connector);
 
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)

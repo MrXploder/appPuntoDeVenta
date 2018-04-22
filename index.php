@@ -256,7 +256,7 @@
 							<tr class="black white-text">
 								<td colspan="5">
 									<label for="codeSelectorInputElement" class="active">Codigo de Producto</label>
-									<input type="text" ng-model="codeSelector" name="codeSelectorInputElement" id="codeSelectorInputElement" ng-keydown="$event.keyCode === 13 && whenEnterKeyPressOnCodeSelectorDoSomething($event)" autofocus>
+									<input type="number" ng-model="codeSelector" name="codeSelectorInputElement" id="codeSelectorInputElement" ng-keydown="$event.keyCode === 13 && whenEnterKeyPressOnCodeSelectorDoSomething($event)" autofocus>
 								</td>
 							</tr>
 							<!--ACTUALLY THE REAL BILL-->
@@ -291,7 +291,7 @@
 							</tr>
 							<tr>
 								<th class="red">TOTAL: </th>
-								<td><input type="text" ng-model="getTotal() | currency: '$':0" readonly></td>
+								<td><input type="text" ng-value="getTotal() | currency: '$':0" readonly></td>
 							</tr>
 							<tr>
 								<th class="red">PAGO EFECTIVO: </th>
@@ -300,7 +300,7 @@
 							<tr>
 								<th class="red">SU CAMBIO: </th>
 								<td>
-									<input type="text" ng-model="getChange()" ng-model="cashChange" readonly>
+									<input type="text" ng-value="getChange()" ng-model="cashChange" readonly>
 								</td>
 							</tr>
 						</thead>
