@@ -121,7 +121,8 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		e.preventDefault();
 		if($scope.codeSelector != null && $scope.codeSelector > 0){
 			if($scope.filteredListaDeProductos.length > 0){
-				$scope.focusXY(1,1);
+				//$scope.focusXY(1,1);
+				angular.element(document.getElementById("scapegoatCantidadProducto")).focus();
 			}
 			else{
 				$scope.codeSelector = null;
@@ -186,15 +187,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 			}
 		});
 
-		if($scope.cashPayment == 0){
-			$scope.cashPayment = summation;
-		}
-
 		return summation;
-	};
-
-	$scope.selectAllTextOnFocus = function(){
-		angular.element(document.activeElement).select();
 	};
 
 	$scope.getChange = function(){
@@ -253,7 +246,9 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		else{
 			$scope.tableToDisplay = "abrirCerrarCaja";
 		}
-
+		if($scope.tableToDisplay === 'pagarBoleta'){
+			$scope.cashPayment = $scope.getTotal();
+		}
 	};
 
 	$scope.startCashRegister = function(){

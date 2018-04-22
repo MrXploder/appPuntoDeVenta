@@ -28,14 +28,13 @@
 	<script src="../js/dependencies/angular-materialize.js"></script>
 	<script src="../js/dependencies/angular-locale_es-419.js"></script>
 	<script src="../js/dependencies/FileSaver.js"></script>
-	<script src="../js/dependencies/xlsx.full.min.js"></script>
-	<script src="../js/dependencies/emulatetab.joelpurra.js"></script>
 	<!--ANGULARJS-APP-->
 	<!--ANGULAR MODULES-->
 	<script src="../js/modules/appPuntoDeVenta.js?v=<?php echo $versionControll ?>"></script>
 	<!--ANGULAR FILTERS-->
 	<script src="../js/filters/chunk.js?v=<?php echo $versionControll ?>"></script>
 	<script src="../js/filters/mysqlDate.js?v<?php echo $versionControll ?>"></script>
+	<script src="../js/filters/reverse.js?v<?php echo $versionControll ?>"></script>
 	<!--ANGULAR RUNS-->
 	<script src="../js/runs/navigatorOnline.js?v=<?php echo $versionControll ?>"></script>
 	<!--ANGULAR DIRECTIVES-->
@@ -260,11 +259,17 @@
 									<input type="text" ng-model="codeSelector" name="codeSelectorInputElement" id="codeSelectorInputElement" ng-keydown="$event.keyCode === 13 && whenEnterKeyPressOnCodeSelectorDoSomething($event)" autofocus>
 								</td>
 							</tr>
+							<!--ACTUALLY THE REAL BILL-->
+							<tr ng-repeat="item in nuevaBoleta | reverse track by $index" class="grey lighten-4">
+								<td><input type="text" name="nomProductNo{{$index+1}}" id="nomProductNo{{$index+1}}" ng-model="item.nom_prod" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
+								<td style="width: 10%"><input type="text" name="cantProductNo{{$index+1}}" id="cantProductNo{{$index+1}}" ng-model="item.choosenCantidad" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
+								<td style="width: 10%"><input type="text" name="precProductNo{{$index+1}}" id="precProductNo{{$index+1}}" ng-value="getValueFromScapegoatAndChoosenCant(item) | currency: '$':0" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
+							</tr>
 							<!--THE SCAPEGOAT-->
 							<tr ng-repeat="scapegoat in filteredListaDeProductos = (listaDeProductos | filter: {id: codeSelector} | limitTo: 1)" ng-if="codeSelector != null && codeSelector != undefined && codeSelector != ''">
 								<td><input type="text" name="scapegoatNomProducto" id="scapegoatNomProducto" ng-value="scapegoat.nom_prod"/></td>
 								<td style="width: 10%">
-									<input type="text" name="scapegoatCantidadProducto" id="scapegoatCantidadProducto" list="scapegoatCantidadProductoList" ng-model="scapegoat.choosenCantidad" ng-init="scapegoat.choosenCantidad = '1'" ng-keypress="$event.keyCode === 13 && insertNewProductOnProductsList(scapegoat)"/>
+									<input type="text" name="scapegoatCantidadProducto" id="scapegoatCantidadProducto" list="scapegoatCantidadProductoList" ng-model="scapegoat.choosenCantidad" ng-init="scapegoat.choosenCantidad = '1'" ng-keypress="$event.keyCode === 13 && insertNewProductOnProductsList(scapegoat)" ng-focus="$event.target.select()"/>
 									<datalist id="scapegoatCantidadProductoList">
 										<option value="1">1 x {{scapegoat.cant_1 | currency: '$':0}}</option>
 										<option value="2">2 x {{scapegoat.cant_2 | currency: '$':0}}</option>
@@ -276,12 +281,6 @@
 								<td>
 									<input type="text" name="scapegoatPrecioProducto" id="scapegoatPrecioProducto" ng-value="getValueFromScapegoatAndChoosenCant(scapegoat) | currency: '$':0">
 								</td>
-							</tr>
-							<!--ACTUALLY THE REAL BILL-->
-							<tr ng-repeat="item in nuevaBoleta track by $index" class="grey lighten-4">
-								<td><input type="text" name="nomProductNo{{$index+1}}" id="nomProductNo{{$index+1}}" ng-model="item.nom_prod" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
-								<td style="width: 10%"><input type="text" name="cantProductNo{{$index+1}}" id="cantProductNo{{$index+1}}" ng-model="item.choosenCantidad" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
-								<td style="width: 10%"><input type="text" name="precProductNo{{$index+1}}" id="precProductNo{{$index+1}}" ng-value="getValueFromScapegoatAndChoosenCant(item) | currency: '$':0" ng-keydown="$event.keyCode === 46 && deleteElement(item)"/></td>
 							</tr>
 						</tbody>
 					</table>
@@ -296,7 +295,7 @@
 							</tr>
 							<tr>
 								<th class="red">PAGO EFECTIVO: </th>
-								<td><input type="text" id="cashPaymentInputElement" name="cashPaymentInputElement" ng-model="cashPayment" ng-init="cashPayment = 0" ng-keydown="$event.keyCode === 13 && commitPayment($event)" currency-input="" ng-focus="selectAllTextOnFocus()"></td>
+								<td><input type="text" id="cashPaymentInputElement" name="cashPaymentInputElement" ng-model="cashPayment" ng-init="cashPayment = 0" ng-keydown="$event.keyCode === 13 && commitPayment($event)" currency-input="" ng-focus="$event.target.select()"></td>
 							</tr>
 							<tr>
 								<th class="red">SU CAMBIO: </th>
