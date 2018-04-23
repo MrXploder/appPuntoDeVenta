@@ -14,7 +14,10 @@ Si se desea cambiar estas configuraciones se debe editar la libreria `MeekroDB` 
 NOTA: Cuando terminen todos los pasos y entren por primera vez, el programa se encargará de comprobar la integridad de las tablas en la base de datos y las creará segun corresponda. Solo deben asegurarse de que MeekroDB pueda acceder libremente a la Base de Datos.
 
 #PASO 2: CARGAR LOS ARCHIVOS EN APACHE (U OTRO SERVIDOR)
+
 Esta app usa PHP por lo que esta pensada para usarse con APACHE y PHP.
+Como esta aplicacion usa una libreria de PHP para conectarse a la impresora, todo el proyecto debe estar en el mismo computador al cual está conectada la impresora. Este proyecto en su forma actual NO brinda ninguna clase de soporte a hostearse en un servidor web.
+Se recomienda instalar WAMP u otro servidor web en Windows.
 
 #PASO 3: CONFIGURAR LA IMPRESORA
 1. Se debe ir al panel de Windows "Agregar impresora" y agregar la impresora a la lista de impresoras de windows
@@ -28,5 +31,6 @@ El proyecto tiene un archivo PHP llamado `generalSettings.php` ubicado en `../ph
 2. La variable `$versionControll` que es para mantener un versionado de la aplicacion (recomiendo dejarlo en `rand()` si no se sabe lo que se hace.
 
 #ABOUT
+
 Cualquier duda me hablan por correo.
 Tambien acepto sugerencias. cheers!
