@@ -20,6 +20,7 @@ Esta app usa PHP por lo que esta pensada para usarse con APACHE y PHP.
 3. Luego se debe compartir la impresora en la red bajo el mismo nombre (`POS`)
 
 #PASO 4: CONFIGURAR MODO PRODUCCION
+
 El proyecto tiene un archivo PHP llamado `generalSettings.php` ubicado en `../php/dependencies/generalSettings.php`, en el podras encontrar dos variables:
 1. la variable `$modeControll`, esta puede tener 2 valores: "DEV" o "PROD": a) Si es "DEV", todas las impresiones se haran a un archivo de texto. b) Si es "PROD", todas las impresiones se harán a la impresora compartida con nombre "POS".
 2. La variable `$versionControll` que es para mantener un versionado de la aplicacion (recomiendo dejarlo en `rand()` si no se sabe lo que se hace.
