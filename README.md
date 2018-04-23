@@ -27,7 +27,12 @@ Se recomienda instalar WAMP u otro servidor web en Windows.
 #PASO 4: CONFIGURAR MODO PRODUCCION
 
 El proyecto tiene un archivo PHP llamado `generalSettings.php` ubicado en `../php/dependencies/generalSettings.php`, en el podras encontrar dos variables:
-1. la variable `$modeControll`, esta puede tener 2 valores: "DEV" o "PROD": a) Si es "DEV", todas las impresiones se haran a un archivo de texto. b) Si es "PROD", todas las impresiones se harán a la impresora compartida con nombre "POS".
+1. la variable `$modeControll`, esta puede tener 2 valores: "DEV" o "PROD": 
+
+··1 Si es "DEV", todas las impresiones se haran a un archivo de texto. 
+
+··2 Si es "PROD", todas las impresiones se harán a la impresora compartida con nombre "POS".
+
 2. La variable `$versionControll` que es para mantener un versionado de la aplicacion (recomiendo dejarlo en `rand()` si no se sabe lo que se hace.
 
 #ABOUT
