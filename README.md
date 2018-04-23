@@ -2,6 +2,7 @@
 Esta es una aplicacion basica de punto de venta que usa una impresora POS Epson (o compatibles)
 
 #PROCEDIMIENTO:
+
 #PASO 1: CONFIGURAR MYSQL
 Valores por defecto de la base de datos:
 
@@ -10,6 +11,7 @@ Valores por defecto de la base de datos:
 3. Contraseña de mysql:        `root`
 
 Si se desea cambiar estas configuraciones se debe editar la libreria `MeekroDB` ubicada en `../php/dependencies/meekrodb.class.php`
+NOTA: Cuando terminen todos los pasos y entren por primera vez, el programa se encargará de comprobar la integridad de las tablas en la base de datos y las creará segun corresponda. Solo deben asegurarse de que MeekroDB pueda acceder libremente a la Base de Datos.
 
 #PASO 2: CARGAR LOS ARCHIVOS EN APACHE (U OTRO SERVIDOR)
 Esta app usa PHP por lo que esta pensada para usarse con APACHE y PHP.
