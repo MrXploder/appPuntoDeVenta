@@ -26,4 +26,5 @@ El proyecto tiene un archivo PHP llamado `generalSettings.php` ubicado en `../ph
 2. La variable `$versionControll` que es para mantener un versionado de la aplicacion (recomiendo dejarlo en `rand()` si no se sabe lo que se hace.
 
 #ABOUT
-Cualquier duda me hablan por correo para resolver dudas.
+Cualquier duda me hablan por correo.
+Tambien acepto sugerencias. cheers!
