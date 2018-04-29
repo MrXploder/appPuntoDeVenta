@@ -1,4 +1,4 @@
-<?php require $_SERVER['DOCUMENT_ROOT'].'php/dependencies/databaseCheckIntegrity.php'; ?>
+<?php require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/databaseCheckIntegrity.php'; ?>
 <?php require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php'; ?>
 <!DOCTYPE html>
 <html ng-app="appPuntoDeVenta" ng-controller="appController">
@@ -28,7 +28,6 @@
 	<script src="../js/dependencies/angular-dirPagination.js"></script>
 	<script src="../js/dependencies/angular-materialize.js"></script>
 	<script src="../js/dependencies/angular-locale_es-419.js"></script>
-	<script src="../js/dependencies/FileSaver.js"></script>
 	<!--ANGULARJS-APP-->
 	<!--ANGULAR MODULES-->
 	<script src="../js/modules/appPuntoDeVenta.js?v=<?php echo $versionControll ?>"></script>
@@ -47,7 +46,7 @@
 <body ondragstart="return false;" ondrop="return false;">
 	<header>
 		<nav>
-			<nav class="white">
+			<nav class="<?php echo $modeControll == 'DEV' ? 'grey' : 'white' ?>">
 				<div class="nav-wrapper">
 					<a href="#"><img src="../img/logo.png" style="width: 150px; height: 63px"></img></a>
 					<ul id="nav-mobile" class="right" ng-if="!isRouteLoading">

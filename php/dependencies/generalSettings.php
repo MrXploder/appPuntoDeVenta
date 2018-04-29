@@ -1,6 +1,6 @@
 <?php
 date_default_timezone_set('America/Santiago');
-$modeControll = "dev";
+$modeControll = "DEV";
 $versionControll = rand();
 
 	/*

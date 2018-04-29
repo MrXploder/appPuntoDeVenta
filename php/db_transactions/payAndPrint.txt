@@ -1,14 +1,17 @@
-@@Fecha: 22/04/2018      Hora: 18:24:56
+@@Fecha: 22/04/2018      Hora: 18:27:41
 
-NOTA DE PEDIDO           NP: 7
+NOTA DE PEDIDO           NP: 1
 --------------------------
 CANT    DESC     PREC
 --------------------------
 !! 1  CONO FELIPE  $1000
+1  CONO LUISITO  $100
+1  ARTESANAL CHICO  $900
+1  CONO FELIPE  $1000
 @
 
-              TOTAL: $1000
-SU PAGO EN EFECTIVO: $1000
+              TOTAL: $3000
+SU PAGO EN EFECTIVO: $3000
 SU VUELTO:           $0
 
 
