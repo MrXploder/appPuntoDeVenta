@@ -6,31 +6,32 @@ Header("Cache-Control: post-check=0, pre-check=0", false);
 Header("Pragma: no-cache");
 // Notificar solamente errores de ejecución
 error_reporting(E_ERROR);
-require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/functions/sanitizeInput.php';
+
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
-
-use Mike42\Escpos\Printer;
-use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-
-if($modeControll === 'dev'){
-	$connector = new FilePrintConnector("reprintOldTicket.txt");
-}
-else{
-	$connector = new WindowsPrintConnector("POS");
-}
-$printer   = new Printer($connector);
+/******************************************************************************/
+/******THIS PIECE OF CODE (FROM ECP/POS LIBRARY) CANNOT BE INCLUDED************/
+/******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
+/******NEED IT*****************************************************************/
+/******************************************************************************/
+require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';													/**/	
+use Mike42\Escpos\Printer;																									/**/
+use Mike42\Escpos\CapabilityProfile;																				/**/
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;										/**/	
+if($modeControll === 'dev') $connector = new FilePrintConnector("POS.txt");	/**/
+else $connector = new WindowsPrintConnector("POS");													/**/
+$printer = new Printer($connector);																					/**/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
-$ticketIdToReprint = sanitizeInput($_GET["id"]);
+$ticketIdToReprint = $_GET["id"];
 //Si hay algo, seguimos.
 if(!empty($ticketIdToReprint)){
 	try{
-		$ticket										  = DB::query("SELECT * FROM `ticket_data_log` WHERE `id` = %d LIMIT 1", $ticketIdToReprint)[0];
-		$ticket["listaDeProductos"] = DB::query("SELECT * FROM `ticket_detail_log` WHERE `id_ticketdata` = %d", $ticketIdToReprint);
+		$ticket = $database->select("ticket_data_log", "*", ["ticket_data_log.id" => $ticketIdToReprint, "LIMIT" => 1])[0];
+		$ticket["listaDeProductos"] = $database->select("ticket_detail_log", "*", ["ticket_detail_log.id_ticketdata" => $ticketIdToReprint]);
 
 		$printer -> initialize();
 		$printer -> text("Fecha: ".date("d/m/Y", strtotime($ticket["date"]))."      Hora: ".date("H:i:s", strtotime($ticket["date"])));
@@ -69,10 +70,13 @@ if(!empty($ticketIdToReprint)){
 		$printer -> feed();         
 		$printer -> cut(Printer::CUT_FULL, 1);
 		$printer -> close();
-		echo json_encode(array("status" => "success"));
+		$payLoad["status"] = "success";
 	}
-	catch(MeekroDBException $e){
-		echo '{"status":"mysqlError", "code":"'.$e->getMessage().'"}';
+	catch(Exception $e){
+		$payLoad["status"] = "sqlError";
+	}
+	finally{
+		echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 	}
 }
 ?>

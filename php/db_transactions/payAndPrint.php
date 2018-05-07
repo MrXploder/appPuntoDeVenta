@@ -7,51 +7,48 @@ Header("Pragma: no-cache");
 // Notificar solamente errores de ejecución
 error_reporting(E_ERROR);
 
-require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
+/******************************************************************************/
+/******THIS PIECE OF CODE (FROM ECP/POS LIBRARY) CANNOT BE INCLUDED************/
+/******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
+/******NEED IT*****************************************************************/
+/******************************************************************************/
+require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';													/**/	
+use Mike42\Escpos\Printer;																									/**/
+use Mike42\Escpos\CapabilityProfile;																				/**/
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;										/**/	
+if($modeControll === 'dev') $connector = new FilePrintConnector("POS.txt");	/**/
+else $connector = new WindowsPrintConnector("POS");													/**/
+$printer = new Printer($connector);																					/**/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
-use Mike42\Escpos\Printer;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-
-if($modeControll === 'dev'){
-	$connector = new FilePrintConnector("payAndPrint.txt");
-}
-else{
-	$connector = new WindowsPrintConnector("POS");
-}
-
-$printer   = new Printer($connector);
-
-//Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
 $postdata = file_get_contents("php://input");
-//Si hay algo, seguimos.
 if(!empty($postdata)){
-	//Transformamos la request a un Array Asociativo de PHP
 	$request = json_decode($postdata, true);
 
-	//Primero debemos obtener el ID del status de la caja actual.
 	try{
-		$printer -> initialize();
-		$printer -> text("Fecha: ".date("d/m/Y")."      Hora: ".date("H:i:s"));
+		$printer->initialize();
+		$printer->text("Fecha: ".date("d/m/Y")."      Hora: ".date("H:i:s"));
 		
-		$cashRegisterSessId = DB::queryFirstField("SELECT `sess_id` FROM `cr_status` WHERE `open` = 1");
+		$cashRegisterSessId = $database->select("cr_status", "sess_id", ["cr_status.open" => 1])[0];
 		
 		$printer -> text("\n\n");
 		
-		DB::insert('ticket_data_log', array(
+		$database->insert("ticket_data_log", [
 			"id_crstatus" => $cashRegisterSessId,
 			"cashPay"			=> $request["pagoEfectivo"],
 			"total"				=> $request["totalBoleta"]
-		));
+		]);
 
-		$ticketDataLogId = DB::insertId();
+		$ticketDataLogId = $database->id();
 		
-		$printer -> text("NOTA DE PEDIDO           NP: ".$ticketDataLogId);
-		$printer -> text("\n--------------------------");
-		$printer -> text("\nCANT    DESC     PREC");
-		$printer -> text("\n--------------------------\n");
+		$printer->text("NOTA DE PEDIDO           NP: ".$ticketDataLogId);
+		$printer->text("\n--------------------------");
+		$printer->text("\nCANT    DESC     PREC");
+		$printer->text("\n--------------------------\n");
 		
 		$printer -> selectPrintMode(Printer::MODE_DOUBLE_HEIGHT);
 		$printer -> selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
@@ -72,12 +69,13 @@ if(!empty($postdata)){
 				case "5": $prec = $item["cant_5"];
 				break;
 			}
-			DB::insert('ticket_detail_log', array(
+			$database->insert("ticket_detail_log", [
 				"id_ticketdata"	=> $ticketDataLogId,
 				"nom_prod"		  => $item["nom_prod"],
 				"cant"				  => $item["choosenCantidad"],
 				"prec"				  => $prec
-			));
+			]);
+
 			$printer -> text("${item['choosenCantidad']}  ${item['nom_prod']}  $${prec}");
 			$printer -> feed();
 		}
@@ -97,10 +95,13 @@ if(!empty($postdata)){
 		$printer -> feed();         
 		$printer -> cut(Printer::CUT_FULL, 1);
 		$printer -> close();
-		echo '{"status":"success"}';
+		$payLoad["status"] = "success";
 	}
-	catch(MeekroDBException $e){
-		echo '{"status":"mysqlError", "code":"'.$e->getMessage().'"}';
+	catch(Exception $e){
+		$payLoad["status"] = "sqlError";
+	}
+	finally{
+		echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 	}
 }
 ?>

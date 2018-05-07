@@ -7,27 +7,26 @@ Header("Pragma: no-cache");
 // Notificar solamente errores de ejecución
 error_reporting(E_ERROR);
 
-require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/functions/sanitizeInput.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
+/******************************************************************************/
+/******THIS PIECE OF CODE (FROM ECP/POS LIBRARY) CANNOT BE INCLUDED************/
+/******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
+/******NEED IT*****************************************************************/
+/******************************************************************************/
+require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';													/**/	
+use Mike42\Escpos\Printer;																									/**/
+use Mike42\Escpos\CapabilityProfile;																				/**/
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;										/**/	
+if($modeControll === 'dev') $connector = new FilePrintConnector("POS.txt");	/**/
+else $connector = new WindowsPrintConnector("POS");													/**/
+$printer = new Printer($connector);																					/**/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
-DB::debugMode();
-
-use Mike42\Escpos\Printer;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-
-if($modeControll === 'dev'){
-	$connector = new FilePrintConnector("printSalesSummary.txt");
-}
-else{
-	$connector = new WindowsPrintConnector("POS");
-}
-$printer   = new Printer($connector);
-
-$sinceAngularDate = sanitizeInput($_GET["since"]);
-$tillAngularDate  = sanitizeInput($_GET["till"]);
+$sinceAngularDate = $_GET["since"];
+$tillAngularDate  = $_GET["till"];
 
 $sinceMysqlFormat = date($sinceAngularDate); 
 $tillMysqlFormat  = date($tillAngularDate);
@@ -35,7 +34,7 @@ $tillMysqlFormat  = date($tillAngularDate);
 $startId = 0;
 $endId = 0;
 
-$data = DB::query("SELECT `sess_id`, `since` FROM `cr_status` WHERE `open` = 0 ORDER BY `sess_id` DESC");
+$data = $database->select("cr_status", ["sess_id", "since"], ["cr_status.open" => 1, "ORDER" => ["cr_status.sess_id" => "DESC"]]);
 foreach ($data as $item){
 	$loopDate  = date("d-m-Y", strtotime(str_replace("/", "-", $item["since"])));
 
@@ -47,12 +46,12 @@ foreach ($data as $item){
 	}
 }
 
-$listadoDeProductos = DB::query("SELECT `id`, `nom_prod` FROM `products`");
+$listadoDeProductos = $database->select("products", ["id", "nom_prod"]);
 
 for($x = $startId; $x <= $endId; $x++){
-	$listadoDeVentas = DB::query("SELECT `id` FROM `ticket_data_log` WHERE `id_crstatus` = %d", $x);
+	$listadoDeVentas = $database->select("ticket_data_log", "id", ["ticket_data_log.id_crstatus" => $x]);
 	foreach ($listadoDeVentas as $detalle){
-		$listadoDetalles = DB::query("SELECT `nom_prod`, `cant`, `prec` FROM `ticket_detail_log` WHERE `id_ticketdata` = %d", $detalle["id"]);
+		$listadoDetalles = $database->select("ticket_detail_log", ["nom_prod", "cant", "prec"], ["ticket_detail_log.id_ticketdata" => $detalle["id"]]);
 		foreach ($listadoDetalles as $item){
 			foreach ($listadoDeProductos as $producto){
 				if($producto["nom_prod"] == $item["nom_prod"]){

@@ -7,26 +7,25 @@ Header("Pragma: no-cache");
 // Notificar solamente errores de ejecución
 error_reporting(E_ERROR);
 
-// Headers HTML para prevenir que el navegador guarde en caché el contenido de la pagina
-require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/functions/sanitizeInput.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
 
-//DB::debugMode();
+/******************************************************************************/
+/******THIS PIECE OF CODE (FROM ECP/POS LIBRARY) CANNOT BE INCLUDED************/
+/******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
+/******NEED IT*****************************************************************/
+/******************************************************************************/
+require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';													/**/	
+use Mike42\Escpos\Printer;																									/**/
+use Mike42\Escpos\CapabilityProfile;																				/**/
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;										/**/	
+if($modeControll === 'dev') $connector = new FilePrintConnector("POS.txt");	/**/
+else $connector = new WindowsPrintConnector("POS");													/**/
+$printer = new Printer($connector);																					/**/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
-use Mike42\Escpos\Printer;
-use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-
-if($modeControll === 'dev'){
-	$connector = new FilePrintConnector("endCashRegister.txt");
-}
-else{
-	$connector = new WindowsPrintConnector("POS");
-}
-$printer   = new Printer($connector);
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
 $postdata = file_get_contents("php://input");
 //Si hay algo, seguimos.
@@ -34,7 +33,7 @@ if(!empty($postdata)){
 	//Transformamos la request a un Array Asociativo de PHP
 	$request = json_decode($postdata, true);
 	try{
-		DB::update('cr_status', array(
+		$database->update("cr_status", [
 			"till"	 		   => date("d/m/Y H:i:s"),
 			"open"			   => 0,
 			"end_cash_20k" => $request["end_cash_20k"],
@@ -45,11 +44,12 @@ if(!empty($postdata)){
 			"end_cash_500" => $request["end_cash_500"],
 			"end_cash_100" => $request["end_cash_100"],
 			"end_cash_50"  => $request["end_cash_50"],
-			"end_cash_10"  => $request["end_cash_10"],
-		), "sess_id = %d", $request["sess_id"]);
+			"end_cash_10"  => $request["end_cash_10"]
+		], ["cr_status.sess_id" => $request["sess_id"]]);
+
 		$payLoad["status"] = "success";
-	//Buscar si hay una sesion abierta
-		$currentSession = DB::queryFirstRow("SELECT * FROM `cr_status` WHERE `open` = 1 LIMIT 1");
+
+		$currentSession = $database->select("cr_status", "*", ["open" => 1, "LIMIT" => 1])[0];
 		if(empty($currentSession)){
 			$payLoad["cashRegister"] = array("open" => false);
 		}
@@ -58,13 +58,14 @@ if(!empty($postdata)){
 			$payLoad["cashRegister"] = $currentSession;
 		}
 		
-		$crIdToReprint  = $request["sess_id"];
-		$crData         = DB::queryFirstRow("SELECT * FROM `cr_status` WHERE `sess_id` = %d", $crIdToReprint);
-		$ticketData     = DB::query("SELECT * FROM `ticket_data_log` WHERE `id_crstatus` = %d", $crIdToReprint); 
-		$ticketQuantity = DB::count();
-		$summation = 0;
-		$profits = 0;
+		$crIdToReprint   = $request["sess_id"];
+		$crData					 = $database->select("cr_status", "*", ["cr_status.sess_id" => $crIdToReprint])[0];
+		$ticketData 		 = $database->select("ticket_data_log", "*", ["ticket_data_log.id_crstatus" => $crIdToReprint]);
+		$ticketQuantity  = count($ticketData);
+		$summation 			 = 0;
+		$profits 				 = 0;
 		$calculatedEarns = 0;
+		
 		$summation += $crData["end_cash_20k"] * 20000;
 		$summation += $crData["end_cash_10k"] * 10000;
 		$summation += $crData["end_cash_5k"]  * 5000;
@@ -134,10 +135,12 @@ if(!empty($postdata)){
 		$printer -> feed();
 		$printer -> cut(Printer::CUT_FULL, 1);
 		$printer -> close();
-		echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 	}
-	catch(MeekroDBException $e){
-		echo json_encode(array("status" => "mysqlError", "code" => $e->getMessage()), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+	catch(Exception $e){
+		$payLoad["status"] = "sqlError";
+	}
+	finally{
+		echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 	}
 }
 ?>

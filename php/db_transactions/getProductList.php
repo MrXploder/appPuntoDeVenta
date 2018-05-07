@@ -8,18 +8,16 @@ Header("Pragma: no-cache");
 error_reporting(E_ERROR);
 
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 
 try{
-	$payLoad["products"] = DB::query("SELECT * FROM `products`");
+	$payLoad["products"] = $database->select("products", "*");
 	for($i = 0; $i < count($payLoad["products"]); $i++){
 		$payLoad["products"][$i]["choosenCantidad"]   = null;
 	}
 	$payLoad["status"] = "success";
 }
-catch(MeekroDBException $e){
+catch(Exception $e){
 	$payLoad["status"] = "mysqlError";
-	$payLoad["code"]   = $e->getMessage();
 }
 finally{
 	echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);

@@ -1,4 +1,3 @@
-<?php require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/databaseCheckIntegrity.php'; ?>
 <?php require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php'; ?>
 <!DOCTYPE html>
 <html ng-app="appPuntoDeVenta" ng-controller="appController">
@@ -387,7 +386,7 @@
 								<tr><td><a class="btn waves-effect waves-light green" ng-click="startCashRegister()">ENVIAR</a></td></tr>
 							</tfoot>
 							<tbody>
-								<tr><td><input type="text" ng-model="cashRegister.start_cash" currency-input=""></td></tr>
+								<tr><td><input type="text" ng-model="cashRegister.start_cash" currency-input="" placeholder="ESCRIBE AQUÍ"></td></tr>
 							</tbody>
 						</table>
 					</div>

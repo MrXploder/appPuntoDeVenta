@@ -8,7 +8,6 @@ Header("Pragma: no-cache");
 error_reporting(E_ERROR);
 
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
 $postdata = file_get_contents("php://input");
@@ -17,14 +16,13 @@ if(!empty($postdata)){
 	//Transformamos la request a un Array Asociativo de PHP
 	$request = json_decode($postdata, true);
 	try{
-		DB::insert('cr_status', array(
+		$database->insert("cr_status", [
 			"since"	 		 => date("d/m/Y H:i:s"),
 			"open"			 => 1,
 			"start_cash" => $request["start_cash"]
-		));
-		$payLoad["status"] = "success";
-	//Buscar si hay una sesion abierta
-		$currentSession = DB::queryFirstRow("SELECT * FROM `cr_status` WHERE `open` = 1 LIMIT 1");
+		]);
+		//Buscar si hay una sesion abierta
+		$currentSession = $database->select("cr_status", "*", ["cr_status.open" => 1, "LIMIT" => 1])[0];
 		if(empty($currentSession)){
 			$payLoad["cashRegister"] = array("open" => false);
 		}
@@ -32,10 +30,13 @@ if(!empty($postdata)){
 			$currentSession["open"] = (bool)$currentSession["open"];
 			$payLoad["cashRegister"] = $currentSession;
 		}
-		echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+		$payLoad["status"] = "success";
 	}
-	catch(MeekroDBException $e){
-		echo json_encode(array("status" => "mysqlError", "code" => $e->getMessage()), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+	catch(Exception $e){
+		$payLoad["status"] = "sqlError";
+	}
+	finally{
+		echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 	}
 }
 ?>

@@ -8,19 +8,16 @@ Header("Pragma: no-cache");
 error_reporting(E_ERROR);
 
 require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
-require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/meekrodb.class.php';
 
 try{
-	$payLoad["tickets"] = DB::query("SELECT * FROM `ticket_data_log` ORDER BY `id` DESC");
+	$payLoad["tickets"] = $database->select("ticket_data_log", "*", ["ORDER" => ["ticket_data_log.id" => "DESC"]]);
 	for($i = 0; $i < count($payLoad["tickets"]); $i++){
-		$payLoad["tickets"][$i]["detail"] = DB::query("SELECT * FROM `ticket_detail_log` WHERE `id_ticketdata` = %d", $payLoad["tickets"][$i]["id"]);
+		$payLoad["tickets"][$i]["detail"] = $database->select("ticket_detail_log", "*", ["id_ticketdata" => $payLoad["tickets"][$i]["id"]]);
 	}
 	$payLoad["status"] = "success";
 }
-catch(MeekroDBException $e){
-	$payLoad["status"] = "mysqlError";
-	$payLoad["code"]   = $e->getMessage();
-	$payLoad["query"]  = $e->getQuery();
+catch(Exception $e){
+	$payLoad["status"] = "sqlError";
 }
 finally{
 	echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);

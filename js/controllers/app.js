@@ -251,9 +251,6 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		}
 		else{
 			$scope.tableToDisplay = tableName;
-			getTicketsListFromServer();
-			getProductListFromServer();
-			getCashRegisterListFromServer();
 		}
 		if($scope.tableToDisplay === 'pagarBoleta'){
 			$scope.cashPayment = $scope.getTotal();
@@ -261,10 +258,13 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	};
 
 	$scope.startCashRegister = function(){
-		$http.put('../php/db_transactions/startCashRegister.php', $scope.cashRegister).then(function successCallback(response){
+		$http.post('../php/db_transactions/startCashRegister.php', $scope.cashRegister).then(function successCallback(response){
 			if(response.data.status === "success"){
 				$scope.cashRegister = response.data.cashRegister;
 				$scope.setTableToDisplay("crearBoleta");
+				getTicketsListFromServer();
+				getProductListFromServer();
+				getCashRegisterListFromServer();
 			}
 		}, function errorCallback(response){
 
@@ -273,10 +273,13 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 
 	$scope.endCashRegister = function(){
 		if($scope.calculateEndCash() >= $scope.cashRegister.start_cash){
-			$http.put('../php/db_transactions/endCashRegister.php', $scope.cashRegister).then(function successCallback(response){
+			$http.post('../php/db_transactions/endCashRegister.php', $scope.cashRegister).then(function successCallback(response){
 				if(response.data.status === "success"){
 					$scope.cashRegister = response.data.cashRegister;
 					$scope.setTableToDisplay("crearBoleta");
+					getTicketsListFromServer();
+					getProductListFromServer();
+					getCashRegisterListFromServer();
 				}
 			}, function errorCallback(response){
 
@@ -288,6 +291,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	};
 
 	$scope.calculateEndCash = function(){
+		if(!$scope.cashRegister) return;
 		let object = angular.copy($scope.cashRegister);
 		let summation = 0;
 		summation += object.end_cash_20k * 20000;
@@ -320,6 +324,9 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	$scope.reprintOldTicket = function(ticket){
 		$http.get('../php/db_transactions/reprintOldTicket.php', {params:{id: ticket.id}}).then(function successCallback(response){
 			if(response.data.status === "success"){
+				getTicketsListFromServer();
+				getProductListFromServer();
+				getCashRegisterListFromServer();
 				Materialize.toast("Boleta Reimpresa con exito", 5000, "green");
 			}
 		}, function errorCallback(response){
@@ -330,6 +337,9 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	$scope.reprintOldTicket = function(ticket){
 		$http.get('../php/db_transactions/reprintOldTicket.php', {params:{id: ticket.id}}).then(function successCallback(response){
 			if(response.data.status === "success"){
+				getTicketsListFromServer();
+				getProductListFromServer();
+				getCashRegisterListFromServer();
 				Materialize.toast("Boleta Reimpresa con exito", 5000, "green");
 			}
 		}, function errorCallback(response){
@@ -340,6 +350,9 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	$scope.reprintOldCashRegisterStatus = function(item){
 		$http.get('../php/db_transactions/reprintOldCashRegisterStatus.php', {params:{id: item.sess_id}}).then(function successCallback(response){
 			if(response.data.status === "success"){
+				getTicketsListFromServer();
+				getProductListFromServer();
+				getCashRegisterListFromServer();
 				Materialize.toast("Caja Reimpresa con exito", 5000, "green");
 			}
 		}, function errorCallback(response){
@@ -355,11 +368,13 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	};
 
 	$scope.editExistingProduct = function(item){
-		$http.put('../php/db_transactions/updateProductInfo.php', $scope.selectedProduct).then(function successCallback(response){
+		$http.post('../php/db_transactions/updateProductInfo.php', $scope.selectedProduct).then(function successCallback(response){
 			if(response.data.status === "success"){
 				Materialize.toast('Cambios realizados con exito', 5000, 'green');
 				angular.element(document.getElementById("detalleProductModal")).modal('close');
+				getTicketsListFromServer();
 				getProductListFromServer();
+				getCashRegisterListFromServer();
 			}
 		}, function errorCallback(response){
 
@@ -372,7 +387,9 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 				$scope.newProduct = null;
 				Materialize.toast('Cambios realizados con exito', 5000, 'green');
 				angular.element(document.getElementById("newProductModal")).modal('close');
+				getTicketsListFromServer();
 				getProductListFromServer();
+				getCashRegisterListFromServer();
 			}
 		}, function errorCallback(response){
 
@@ -418,6 +435,9 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	$scope.printSalesSummary = function(item){
 		$http.get('../php/db_transactions/printSalesSummary.php', {params:{since: item.since, till: item.till}}).then(function successCallback(response){
 			if(response.data.status === "success"){
+				getTicketsListFromServer();
+				getProductListFromServer();
+				getCashRegisterListFromServer();
 			}
 		}, function errorCallback(response){
 

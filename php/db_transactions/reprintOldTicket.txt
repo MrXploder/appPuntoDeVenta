@@ -1,15 +1,0 @@
-@@Fecha: 22/04/2018      Hora: 02:04:37
-
-!!          NP: 1@
---------------------------------------------
-CANTIDAD         DESCRIPCION          PRECIO
---------------------------------------------
-!! 1      ARTESANAL CHICO     $900
-1      CONO FELIPE     $1000
-@
-
-              TOTAL: $1900
-SU PAGO EN EFECTIVO: $2000
-SU VUELTO:           $100
-
-VA
