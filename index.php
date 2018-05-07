@@ -486,18 +486,21 @@
 <footer class="page-footer footer grey darken-3">
 	<div class="footer-copyright grey darken-3">
 		<div class="row">
-			<p>
+			<div class="col l6">
 				<strong class="black">SUPRIMIR</strong> = Estando sobre un producto puedes eliminarlo.<br>
 				<strong class="black">A</strong>= Presionalo estando sobre la boleta para anular toda la venta.<br>
 				<strong class="black">B</strong> = Cuando estes pagando, presiona para volver.<br>
+			</div>
+			<div class="col l6">
 				<strong class="black">ENTER</strong> = Cuando estes en el selector de Codigo y no haya nada escrito, presiona para ir a pagar.<br>
 				<strong class="black">L</strong> = Presionalo en cualquier momento para ver el listado de productos.<br>
 				<strong class="black">ESC</strong> = Presionalo cuando estes viendo el listado de productos para salir.
-			</p>
+			</div>
 		</div>
 		<div class="row">
 			<a href="mailto: l.arancibiaf@gmail.com">© MrXploder AngularJS Dev</a><br>
-			<a class="grey-text text-lighten-4 right" href="#!">Compilación: #<?php echo $versionControll ?></a>
+			<a class="grey-text text-lighten-4 right" href="#!">Compilación: #<?php echo $versionControll; ?></a><br>
+			<a class="grey-text text-lighten-4 right" href="#!">Modo: <?php echo $modeControll == 'dev' ? 'Desarrollo':'Producción'; ?>
 		</div>
 	</div>
 </footer>

@@ -13,12 +13,11 @@ require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
 $postData = file_get_contents("php://input");
 //Si hay algo, seguimos.
 if(!empty($postData)){
-	$request = json_decode($putData, true);
+	$request = json_decode($postData, true);
 
 	try{
 		$database->delete("products", ["products.id" => $request["old_id"]]);
-
-		$foundedProduct = $database->select("products", "id", ["id" => $request["id"]])[0];
+		$foundedProduct = $database->select("products", "id", ["products.id" => $request["id"]])[0];
 		if(empty($foundedProduct)){
 			$database->insert("products", [
 				"id"       => $request["id"],
