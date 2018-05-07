@@ -3,15 +3,7 @@ Esta es una aplicacion basica de punto de venta que usa una impresora POS Epson 
 
 #PROCEDIMIENTO:
 
-#PASO 1: CONFIGURAR MYSQL
-Valores por defecto de la base de datos:
-
-1. Nombre de la base de datos: `puntodeventa_db`
-2. Nombre de usuario de mysql: `root`
-3. Contraseña de mysql:        `root`
-
-Si se desea cambiar estas configuraciones se debe editar la libreria `MeekroDB` ubicada en `../php/dependencies/meekrodb.class.php`
-NOTA: Cuando terminen todos los pasos y entren por primera vez, el programa se encargará de comprobar la integridad de las tablas en la base de datos y las creará segun corresponda. Solo deben asegurarse de que MeekroDB pueda acceder libremente a la Base de Datos.
+#PASO 1: 
 
 #PASO 2: CARGAR LOS ARCHIVOS EN APACHE (U OTRO SERVIDOR)
 
@@ -28,10 +20,8 @@ Se recomienda instalar WAMP u otro servidor web en Windows.
 
 El proyecto tiene un archivo PHP llamado `generalSettings.php` ubicado en `../php/dependencies/generalSettings.php`, en el podras encontrar dos variables:
 1. la variable `$modeControll`, esta puede tener 2 valores: "DEV" o "PROD": 
-
-··1 Si es "DEV", todas las impresiones se haran a un archivo de texto. 
-
-··2 Si es "PROD", todas las impresiones se harán a la impresora compartida con nombre "POS".
+->1.1 Si es "DEV", todas las impresiones se haran a un archivo de texto. 
+->1.2 Si es "PROD", todas las impresiones se harán a la impresora compartida con nombre "POS".
 
 2. La variable `$versionControll` que es para mantener un versionado de la aplicacion (recomiendo dejarlo en `rand()` si no se sabe lo que se hace.
 
