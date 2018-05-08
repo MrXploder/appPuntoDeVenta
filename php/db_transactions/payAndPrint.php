@@ -13,7 +13,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
 /******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
 /******NEED IT*****************************************************************/
 /******************************************************************************/
-require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';													/**/	
+require $_SERVER['DOCUMENT_ROOT'].'php/dependencies/escpos.autoload.php';		/**/	
 use Mike42\Escpos\Printer;																									/**/
 use Mike42\Escpos\CapabilityProfile;																				/**/
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/
@@ -35,7 +35,8 @@ if(!empty($postdata)){
 		
 		$cashRegisterSessId = $database->select("cr_status", "sess_id", ["cr_status.open" => 1])[0];
 		
-		$printer -> text("\n\n");
+		$printer->feed();
+		$printer->feed();
 		
 		$database->insert("ticket_data_log", [
 			"id_crstatus" => $cashRegisterSessId,
@@ -46,9 +47,13 @@ if(!empty($postdata)){
 		$ticketDataLogId = $database->id();
 		
 		$printer->text("NOTA DE PEDIDO           NP: ".$ticketDataLogId);
-		$printer->text("\n--------------------------");
-		$printer->text("\nCANT    DESC     PREC");
-		$printer->text("\n--------------------------\n");
+		$printer->feed();
+		$printer->text("--------------------------");
+		$printer->feed();
+		$printer->text("CANT    DESC     PREC");
+		$printer->feed();
+		$printer->text("--------------------------");
+		$printer->feed();
 		
 		$printer -> selectPrintMode(Printer::MODE_DOUBLE_HEIGHT);
 		$printer -> selectPrintMode(Printer::MODE_DOUBLE_WIDTH);

@@ -13,7 +13,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
 /******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
 /******NEED IT*****************************************************************/
 /******************************************************************************/
-require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';													/**/	
+require $_SERVER['DOCUMENT_ROOT'].'php/dependencies/escpos.autoload.php';		/**/	
 use Mike42\Escpos\Printer;																									/**/
 use Mike42\Escpos\CapabilityProfile;																				/**/
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/
@@ -33,67 +33,75 @@ $tillMysqlFormat  = date($tillAngularDate);
 
 $startId = 0;
 $endId = 0;
+try{
+	$data = $database->select("cr_status", "*", ["cr_status.open" => 0, "ORDER" => ["cr_status.sess_id" => "DESC"]]);
+	foreach ($data as $item){
+		$loopDate = date("d-m-Y", strtotime(str_replace("/", "-", $item["since"])));
 
-$data = $database->select("cr_status", ["sess_id", "since"], ["cr_status.open" => 1, "ORDER" => ["cr_status.sess_id" => "DESC"]]);
-foreach ($data as $item){
-	$loopDate  = date("d-m-Y", strtotime(str_replace("/", "-", $item["since"])));
-
-	if($sinceMysqlFormat == $loopDate){
-		$startId = $item["sess_id"];
+		if($sinceMysqlFormat == $loopDate){
+			$startId = $item["sess_id"];
+		}
+		if($tillMysqlFormat == $loopDate){
+			$endId = $item["sess_id"];
+		}
 	}
-	if($tillMysqlFormat == $loopDate){
-		$endId = $item["sess_id"];
-	}
-}
+	if($endId == 0) $endId = $startId;
 
-$listadoDeProductos = $database->select("products", ["id", "nom_prod"]);
+	$listadoDeProductos = $database->select("products", "*");
 
-for($x = $startId; $x <= $endId; $x++){
-	$listadoDeVentas = $database->select("ticket_data_log", "id", ["ticket_data_log.id_crstatus" => $x]);
-	foreach ($listadoDeVentas as $detalle){
-		$listadoDetalles = $database->select("ticket_detail_log", ["nom_prod", "cant", "prec"], ["ticket_detail_log.id_ticketdata" => $detalle["id"]]);
-		foreach ($listadoDetalles as $item){
-			foreach ($listadoDeProductos as $producto){
-				if($producto["nom_prod"] == $item["nom_prod"]){
-					$toPrintList[$producto["nom_prod"]]["key"] = $producto["nom_prod"];
-					$toPrintList[$producto["nom_prod"]]["cant"] += $item["cant"];
-					$toPrintList[$producto["nom_prod"]]["prec"] += $item["prec"];
-					
+	for($x = $startId; $x <= $endId; $x++){
+		$listadoDeVentas = $database->select("ticket_data_log", "*", ["ticket_data_log.id_crstatus" => $x]);
+		foreach ($listadoDeVentas as $detalle){
+			$listadoDetalles = $database->select("ticket_detail_log", "*", ["ticket_detail_log.id_ticketdata" => $detalle["id"]]);
+			foreach ($listadoDetalles as $item){
+				foreach ($listadoDeProductos as $producto){
+					if($producto["nom_prod"] == $item["nom_prod"]){
+						$toPrintList[$producto["nom_prod"]]["key"] = $producto["nom_prod"];
+						$toPrintList[$producto["nom_prod"]]["cant"] += $item["cant"];
+						$toPrintList[$producto["nom_prod"]]["prec"] += $item["prec"];
+
+					}
 				}
 			}
 		}
 	}
-}
 
-$printer -> initialize();
-$printer -> text("FECHA: ".date("d-m-Y")."     HORA: ".date("H:i:s"));
-$printer -> feed();
-$printer -> text("-------------------------------------");
-$printer -> feed();
-$printer -> text("         RESUMEN DE VENTAS           ");
-$printer -> feed();
-$printer -> text("-------------------------------------");
-$printer -> feed();
-$printer -> text("DESDE: ".$sinceMysqlFormat);
-$printer -> feed();
-$printer -> text("HASTA: ".$tillMysqlFormat);
-$printer -> feed();
-$printer -> text("-------------------------------------");
-$printer -> feed();
-$printer -> text("PRODUCTO         CANT           TOTAL");
-$printer -> feed();
-$printer -> text("-------------------------------------");
-$printer -> feed();
-foreach ($toPrintList as $selection){
-	$mainTotal += $selection["prec"];
-	$printer -> text($selection["key"]."       ".$selection["cant"]."         ".$selection["prec"]);
+	$printer -> initialize();
+	$printer -> text("FECHA: ".date("d-m-Y")."     HORA: ".date("H:i:s"));
 	$printer -> feed();
+	$printer -> text("-------------------------------------");
+	$printer -> feed();
+	$printer -> text("         RESUMEN DE VENTAS           ");
+	$printer -> feed();
+	$printer -> text("-------------------------------------");
+	$printer -> feed();
+	$printer -> text("DESDE: ".$sinceMysqlFormat);
+	$printer -> feed();
+	$printer -> text("HASTA: ".$tillMysqlFormat);
+	$printer -> feed();
+	$printer -> text("-------------------------------------");
+	$printer -> feed();
+	$printer -> text("PRODUCTO         CANT           TOTAL");
+	$printer -> feed();
+	$printer -> text("-------------------------------------");
+	$printer -> feed();
+	foreach ($toPrintList as $selection){
+		$mainTotal += $selection["prec"];
+		$printer -> text($selection["key"]."       ".$selection["cant"]."         ".$selection["prec"]);
+		$printer -> feed();
+	}
+	$printer -> feed();
+	$printer -> text("TOTAL VENTAS: $".$mainTotal);
+	$printer -> feed();
+	$printer -> feed();
+	$printer -> cut(Printer::CUT_FULL, 1);
+	$printer -> close();
+	$payLoad["status"] = "success";
 }
-$printer -> feed();
-$printer -> text("TOTAL VENTAS: $".$mainTotal);
-$printer -> feed();
-$printer -> feed();
-$printer -> cut(Printer::CUT_FULL, 1);
-$printer -> close();
-
+catch(Exception $e){
+	$payLoad["status"] = "error";
+}
+finally{
+			echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+}
 ?>

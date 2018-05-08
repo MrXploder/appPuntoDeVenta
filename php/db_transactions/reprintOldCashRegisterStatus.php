@@ -13,7 +13,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
 /******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
 /******NEED IT*****************************************************************/
 /******************************************************************************/
-require $_SERVER['DOCUMENT_ROOT'].'/autoload.php';													/**/	
+require $_SERVER['DOCUMENT_ROOT'].'php/dependencies/escpos.autoload.php';		/**/	
 use Mike42\Escpos\Printer;																									/**/
 use Mike42\Escpos\CapabilityProfile;																				/**/
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/
@@ -26,7 +26,7 @@ $printer = new Printer($connector);																					/**/
 /******************************************************************************/
 
 //Recuperamos el mensaje JSON del cuerpo de la solicitud (POST)
-$crIdToReprint = sanitizeInput($_GET["id"]);
+$crIdToReprint = $_GET["id"];
 //Si hay algo, seguimos.
 if(!empty($crIdToReprint)){
 	try{

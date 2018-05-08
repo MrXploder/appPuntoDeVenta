@@ -11,41 +11,30 @@
 	<link rel="manifest" href="../manifest.json">
 	<!--No descuidar el orden de los archivos CCS y JS-->
 	<!--CSS DEPENDENCIES-->
-	<link rel="stylesheet" href="../css/materialize.css">
-	<link rel="stylesheet" href="../css/materialize-stickyfooter.css">
-	<link rel="stylesheet" href="../css/loading-bar.css">
-	<link rel="stylesheet" href="../css/spinkit.css">
-	<link rel="stylesheet" href="../css/fontawesome.css">
-	<link rel="stylesheet" href="../css/webfont.css">
-	<link rel="stylesheet" href="../css/custom.css?v=<?php echo $versionControll ?>">
+	<?php
+	$files = glob("{/css/*.css}",GLOB_BRACE);
+	for($i = 0; $i < count($files); $i++){
+		echo '<link rel="stylesheet" href="..'.$files[$i].'?v='.$versionControll.'">';
+	}
+	?>
 	<!--JAVASCRIPT DEPENDENCIES-->
-	<script src="../js/dependencies/jquery.js"></script>
-	<script src="../js/dependencies/angular.js"></script>
-	<script src="../js/dependencies/materialize.js"></script>
-	<script src="../js/dependencies/angular-html5storage.js"></script>
-	<script src="../js/dependencies/angular-loadingBar.js"></script>
-	<script src="../js/dependencies/angular-dirPagination.js"></script>
-	<script src="../js/dependencies/angular-materialize.js"></script>
-	<script src="../js/dependencies/angular-locale_es-419.js"></script>
-	<!--ANGULARJS-APP-->
-	<!--ANGULAR MODULES-->
-	<script src="../js/modules/appPuntoDeVenta.js?v=<?php echo $versionControll ?>"></script>
-	<!--ANGULAR FILTERS-->
-	<script src="../js/filters/chunk.js?v=<?php echo $versionControll ?>"></script>
-	<script src="../js/filters/mysqlDate.js?v<?php echo $versionControll ?>"></script>
-	<script src="../js/filters/reverse.js?v<?php echo $versionControll ?>"></script>
-	<!--ANGULAR RUNS-->
-	<script src="../js/runs/navigatorOnline.js?v=<?php echo $versionControll ?>"></script>
-	<!--ANGULAR DIRECTIVES-->
-	<script src="../js/directives/stringToNumber.js?v=<?php echo $versionControll ?>"></script>
-	<script src="../js/directives/sgNumberInput.js?v=<?php echo $versionControll ?>"></script>
-	<!--ANGULAR CONTROLLERS-->
-	<script src="../js/controllers/app.js?v=<?php echo $versionControll ?>"></script>
+	<?php
+	$files = glob("{/js/dependencies/*.js}",GLOB_BRACE);
+	for($i = 0; $i < count($files); $i++){
+		echo '<script src="..'.$files[$i].'?v='.$versionControll.'"></script>';
+	}
+	?>
+	<?php
+	$files = glob("{/js/angular/**/*.js}",GLOB_BRACE);
+	for($i = 0; $i < count($files); $i++){
+		echo '<script src="..'.$files[$i].'?v='.$versionControll.'"></script>';
+	}
+	?>
 </head>
 <body ondragstart="return false;" ondrop="return false;">
 	<header>
 		<nav>
-			<nav class="<?php echo $modeControll == 'DEV' ? 'grey' : 'white' ?>">
+			<nav class="<?php echo $modeControll == 'dev' ? 'grey darken-3' : 'white' ?>">
 				<div class="nav-wrapper">
 					<a href="#"><img src="../img/logo.png" style="width: 150px; height: 63px"></img></a>
 					<ul id="nav-mobile" class="right" ng-if="!isRouteLoading">

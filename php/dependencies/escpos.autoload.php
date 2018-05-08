@@ -9,7 +9,7 @@ spl_autoload_register ( function ($class) {
 	 * https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader-examples.md
 	 */
 	$prefix = "Mike42\\";
-	$base_dir = $_SERVER['DOCUMENT_ROOT']."/src/Mike42/";
+	$base_dir = $_SERVER['DOCUMENT_ROOT']."/php/dependencies/";
 	
 	/* Only continue for classes in this namespace */
 	$len = strlen ( $prefix );
