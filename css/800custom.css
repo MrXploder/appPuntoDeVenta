@@ -8,6 +8,7 @@ html{
 	/*font-family: 'Alegreya Sans SC';*/
 	font-family: 'Ubuntu Condensed', sans-serif;
 	font-weight: 1000;
+	font-size: 17px !important;
 }
 th{
 	text-align: center !important;
@@ -160,8 +161,4 @@ th{
 .cSize{
 	text-align: center;
 	padding: 10px;
-}
-
-input[type=text], input[type=number]{
-	height: 1rem !important;
 }

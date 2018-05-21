@@ -7,7 +7,7 @@ use Medoo\Medoo;
 date_default_timezone_set('America/Santiago');
 
 ///GLOBAL VARS///
-$modeControll = "dev"; 			//dev = development; prod = production;
+$modeControll = "prod"; 			//dev = development; prod = production;
 $versionControll = rand(); 	//change this to a fixed number on production
 $payLoad = [];							//output payload
 

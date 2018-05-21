@@ -14,7 +14,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
 /******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
 /******NEED IT*****************************************************************/
 /******************************************************************************/
-require $_SERVER['DOCUMENT_ROOT'].'php/dependencies/escpos.autoload.php';		/**/	
+require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/escpos.autoload.php';		/**/	
 use Mike42\Escpos\Printer;																									/**/
 use Mike42\Escpos\CapabilityProfile;																				/**/
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/

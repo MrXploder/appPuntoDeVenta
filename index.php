@@ -11,25 +11,32 @@
 	<link rel="manifest" href="../manifest.json">
 	<!--No descuidar el orden de los archivos CCS y JS-->
 	<!--CSS DEPENDENCIES-->
-	<?php
-	$files = glob("{/css/*.css}",GLOB_BRACE);
-	for($i = 0; $i < count($files); $i++){
-		echo '<link rel="stylesheet" href="..'.$files[$i].'?v='.$versionControll.'">';
-	}
-	?>
+	<link rel="stylesheet" href="../css/30materialize.css?v=<?php echo $versionControll; ?>">
+	<link rel="stylesheet" href="../css/31materialize-stickyfooter.css?v=<?php echo $versionControll; ?>">
+	<link rel="stylesheet" href="../css/40fontawesome.css?v=<?php echo $versionControll; ?>">
+	<link rel="stylesheet" href="../css/50loading-bar.css?v=<?php echo $versionControll; ?>">
+	<link rel="stylesheet" href="../css/60webfont.css?v=<?php echo $versionControll; ?>">
+	<link rel="stylesheet" href="../css/70spinkit.css?v=<?php echo $versionControll; ?>">
+	<link rel="stylesheet" href="../css/800custom.css?v=<?php echo $versionControll; ?>">	
 	<!--JAVASCRIPT DEPENDENCIES-->
-	<?php
-	$files = glob("{/js/dependencies/*.js}",GLOB_BRACE);
-	for($i = 0; $i < count($files); $i++){
-		echo '<script src="..'.$files[$i].'?v='.$versionControll.'"></script>';
-	}
-	?>
-	<?php
-	$files = glob("{/js/angular/**/*.js}",GLOB_BRACE);
-	for($i = 0; $i < count($files); $i++){
-		echo '<script src="..'.$files[$i].'?v='.$versionControll.'"></script>';
-	}
-	?>
+	<script src="../js/dependencies/10jquery.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/dependencies/20materialize.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/dependencies/30angular.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/dependencies/31angular-html5storage.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/dependencies/32angular-loadingBar.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/dependencies/33angular-dirPagination.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/dependencies/34angular-materialize.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/dependencies/35angular-locale_es-419.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/dependencies/40FileSaver.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/dependencies/50xlsx.full.min.js?v=<?php echo $versionControll; ?>"></script>	
+	<script src="../js/angular/10modules/appPuntoDeVenta.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/angular/20directives/sgNumberInput.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/angular/20directives/stringToNumber.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/angular/30controllers/app.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/angular/40filters/chunk.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/angular/40filters/mysqlDate.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/angular/40filters/reverse.js?v=<?php echo $versionControll; ?>"></script>
+	<script src="../js/angular/50runs/navigatorOnline.js?v=<?php echo $versionControll; ?>"></script>
 </head>
 <body ondragstart="return false;" ondrop="return false;">
 	<header>
@@ -42,7 +49,7 @@
 						<li ng-class="tableToDisplay == 'administrarBoletas' ? 'active':''" ><a ng-click="setTableToDisplay('administrarBoletas')">BOLETAS</a></li>
 						<li ng-class="tableToDisplay == 'administrarProductos' ? 'active':''"><a ng-click="setTableToDisplay('administrarProductos')">PRODUCTOS</a></li>
 						<li ng-class="tableToDisplay == 'administrarCaja' ? 'active':''"><a ng-click="setTableToDisplay('administrarCaja')">CAJA</a></li>
-						<li ng-class="tableToDisplay == 'administrarVentas' ? 'active':''"><a ng-click="setTableToDisplay('administrarVentas')">VENTAS</a></li>
+						<li ng-class="tableToDisplay == 'administrarResumenes' ? 'active':''"><a ng-click="setTableToDisplay('administrarResumenes')">RESUMENES</a></li>
 						<li ng-class="tableToDisplay == 'abrirCerrarCaja' ? 'active':''"><a ng-click="setTableToDisplay('abrirCerrarCaja')">ABRIR/CERRAR</a></li>
 					</ul>
 				</div>
@@ -446,14 +453,15 @@
 							</tr>
 						</tbody>
 					</table>
-					<table id="tablaAdministrarVentas" name="tablaAdministrarVentas" class="cbordered" style="table-layout: inherit; width: 100%" ng-show="tableToDisplay == 'administrarVentas'">
+					<table id="tablaadministrarResumenes" name="tablaadministrarResumenes" class="cbordered" style="table-layout: inherit; width: 100%" ng-show="tableToDisplay == 'administrarResumenes'">
 						<thead class="amber">
 							<tr>
-								<th colspan="3">RESUMEN DE VENTAS</th>
+								<th colspan="4">RESUMEN DE VENTAS POR PRODUCTOS</th>
 							</tr>
 							<tr>
 								<th>DESDE</th>
 								<th>HASTA</th>
+								<th>PRODUCTO</th>
 								<th>IMPRIMIR</th>
 							</tr>
 						</thead>
@@ -461,6 +469,10 @@
 							<tr>
 								<td><input type="text" class="datepicker" ng-model="salesSummary.since"></td>
 								<td><input type="text" class="datepicker" ng-model="salesSummary.till"></td>
+								<td><select ng-model="salesSummary.productKey" material-select>
+									<option value="" selected>Todos</option>
+									<option ng-repeat="producto in listaDeProductos" ng-value="producto.nom_prod">{{producto.nom_prod}}</option>
+								</select></td>
 								<td><a class="btn waves-effect waves-light grey" ng-class="(salesSummary.since != null && salesSummary.till != null && salesSummary.since != '' && salesSummary.till != '') ? '':'disabled'" ng-click="printSalesSummary(salesSummary)"><i class="fas fa-print"></i></a></td>
 							</tr>
 						</tbody>

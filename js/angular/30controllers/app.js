@@ -436,7 +436,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 	};
 
 	$scope.printSalesSummary = function(item){
-		$http.get('../php/db_transactions/printSalesSummary.php', {params:{since: item.since, till: item.till}}).then(function successCallback(response){
+		$http.get('../php/db_transactions/printSalesSummary.php', {params:{since: item.since, till: item.till, key: item.productKey}}).then(function successCallback(response){
 			if(response.data.status === "success"){
 				Materialize.toast('Impreso con exito', 5000, 'green');
 				getTicketsListFromServer();

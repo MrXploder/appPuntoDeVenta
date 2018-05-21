@@ -13,7 +13,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
 /******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
 /******NEED IT*****************************************************************/
 /******************************************************************************/
-require $_SERVER['DOCUMENT_ROOT'].'php/dependencies/escpos.autoload.php';		/**/	
+require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/escpos.autoload.php';		/**/	
 use Mike42\Escpos\Printer;																									/**/
 use Mike42\Escpos\CapabilityProfile;																				/**/
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/
@@ -40,6 +40,7 @@ if(!empty($postdata)){
 		
 		$database->insert("ticket_data_log", [
 			"id_crstatus" => $cashRegisterSessId,
+			"date"				=> date("Y-m-d H:i:s"),
 			"cashPay"			=> $request["pagoEfectivo"],
 			"total"				=> $request["totalBoleta"]
 		]);
@@ -47,16 +48,14 @@ if(!empty($postdata)){
 		$ticketDataLogId = $database->id();
 		
 		$printer->text("NOTA DE PEDIDO           NP: ".$ticketDataLogId);
-		$printer->feed();
-		$printer->text("--------------------------");
-		$printer->feed();
-		$printer->text("CANT    DESC     PREC");
-		$printer->feed();
-		$printer->text("--------------------------");
-		$printer->feed();
+		$printer -> feed();
+		$printer -> text("--------------------------------------------");
+		$printer -> feed();
+		$printer -> text("CANTIDAD         DESCRIPCION          PRECIO");
+		$printer -> feed();
+		$printer -> text("--------------------------------------------");
+		$printer -> feed();
 		
-		$printer -> selectPrintMode(Printer::MODE_DOUBLE_HEIGHT);
-		$printer -> selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
 		foreach($request["listaDeProductos"] as $item){
 			switch($item["choosenCantidad"]){
 				case "1": $prec = $item["cant_1"];
@@ -81,12 +80,10 @@ if(!empty($postdata)){
 				"prec"				  => $prec
 			]);
 
-			$printer -> text("${item['choosenCantidad']}  ${item['nom_prod']}  $${prec}");
+			$printer -> text("${item['choosenCantidad']}     ${item['nom_prod']}     $${prec}");
 			$printer -> feed();
 		}
 		unset($item);
-
-		$printer -> initialize();
 
 		$printer -> feed();
 		$printer -> feed();

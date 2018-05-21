@@ -13,7 +13,7 @@ require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/generalSettings.php';
 /******FROM A EXTERNAL FILE, SO YOU HAVE TO COPY/PASTE WHENEVER YOU************/
 /******NEED IT*****************************************************************/
 /******************************************************************************/
-require $_SERVER['DOCUMENT_ROOT'].'php/dependencies/escpos.autoload.php';		/**/	
+require $_SERVER['DOCUMENT_ROOT'].'/php/dependencies/escpos.autoload.php';		/**/	
 use Mike42\Escpos\Printer;																									/**/
 use Mike42\Escpos\CapabilityProfile;																				/**/
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;												/**/
@@ -47,8 +47,12 @@ try{
 	}
 	if($endId == 0) $endId = $startId;
 
-	$listadoDeProductos = $database->select("products", "*");
-
+	if(empty($_GET["key"])){
+		$listadoDeProductos = $database->select("products", "*");
+	}
+	else{
+		$listadoDeProductos = $database->select("products", "*", ["products.nom_prod" => $_GET["key"]]);
+	}
 	for($x = $startId; $x <= $endId; $x++){
 		$listadoDeVentas = $database->select("ticket_data_log", "*", ["ticket_data_log.id_crstatus" => $x]);
 		foreach ($listadoDeVentas as $detalle){
@@ -59,7 +63,6 @@ try{
 						$toPrintList[$producto["nom_prod"]]["key"] = $producto["nom_prod"];
 						$toPrintList[$producto["nom_prod"]]["cant"] += $item["cant"];
 						$toPrintList[$producto["nom_prod"]]["prec"] += $item["prec"];
-
 					}
 				}
 			}
@@ -102,6 +105,6 @@ catch(Exception $e){
 	$payLoad["status"] = "error";
 }
 finally{
-			echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+	echo json_encode($payLoad, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 }
 ?>

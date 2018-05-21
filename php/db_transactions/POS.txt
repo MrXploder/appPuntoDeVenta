@@ -1,26 +1,15 @@
-@@aRESUMEN DE CAJA
-NUMERO DE SESION: #16@
+@@FECHA: 21-05-2018     HORA: 01:33:58
+-------------------------------------
+         RESUMEN DE VENTAS           
+-------------------------------------
+DESDE: 08-05-2018
+HASTA: 21-05-2018
+-------------------------------------
+PRODUCTO         CANT           TOTAL
+-------------------------------------
+cono       4         4000
+barquillo       4         4
 
-FECHA APERTURA CAJA: 07/05/2018 20:48:54
-FECHA CIERRE CAJA:   08/05/2018 01:44:53
-EFECTIVO DE APERTURA: $10000
-::::DETALLE EFECTIVO DE CIERRE::::::
-DENOMINACIt‡N        CANTIDAD
-$20.000            1
-$10.000            0
-$5.000             0
-$2.000             0
-$1.000             0
-$500               0
-$100               0
-$50                0
-$10                0
-TOTAL DE CIERRE DE CAJA: $20000
-GANANCIA DEL TURNO: $10000
-CANTIDAD DE VENTAS GENERADAS: 3
-GANANCIA DEL TURNO (RECOMPROBADA): $4000
-NOTA: LA CAJA NO CUADRA
-SEGUN MIS CALCULOS EL EFECTIVO INGRESADO
-AL CIERRE DE CAJA ES MENOR O MAYOR QUE
-EL CALCULADO POR LAS VENTAS
+TOTAL VENTAS: $4004
+
 VA
