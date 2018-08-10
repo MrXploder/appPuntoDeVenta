@@ -1,8 +1,9 @@
 /* by MrXploder */
+'use strict';
 appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$localStorage", "$timeout", "$interval", "$window", "$filter", "$location", "$document",  function($scope, $rootScope, $http, $localStorage, $timeout, $interval, $window, $filter, $location, $document){
 	//INITIALIZE MATERIALIZECSS JQUERY COMPONENTS
 	$(document).ready(function(){
-		$('select').material_select();    
+		$('select').material_select();
 		$('.collapsible').collapsible();
 		$("#preloaderScreen").modal({dismissible:!1,opacity:.5,inDuration:300,outDuration:200,startingTop:"30%",endingTop:"30%"});
 		$("#detalleTicketModal").modal({dismissible:true,opacity:.5,inDuration:300,outDuration:200,startingTop:"4%",endingTop:"10%",ready:function(o,i){},complete:function(){}});
@@ -48,7 +49,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 				if($scope.currentY > 0 && $scope.currentX === 0){
 					$scope.currentY--;
 					$scope.focusXY($scope.currentX, $scope.currentY);
-					
+
 				}
 			}
 			else if(e.which === 37){
@@ -168,7 +169,7 @@ appPuntoDeVenta.controller('appController', ["$scope", "$rootScope", "$http", "$
 		var myInputFields = $("#tablaNuevaBoleta tbody tr input[type='text'], #tablaNuevaBoleta tbody tr input[type='number']");
 		var x,i,j,chunk = 3;
 		$scope.temparray = new Array;
-		$scope.temparray[0] = new Array; 
+		$scope.temparray[0] = new Array;
 		$scope.temparray[0][0] = myInputFields[0];
 		for (x=1, i=1, j=myInputFields.length; i<j; x++, i+=chunk) {
 			$scope.temparray[x] = myInputFields.slice(i,i+chunk);
